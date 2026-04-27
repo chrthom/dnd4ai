@@ -61,6 +61,13 @@ platform = "Discord"
 channel_name = "abenteuer-1"
 poll_interval = 30  # Sekunden
 
+# Ausgabe-Regeln für Skills
+[output]
+# Erzwingt, dass narrative Skills NUR in Discord antworten
+force_discord_only = true
+# Erlaubt KI-Chat-Antworten nur bei:
+allowed_chat_responses = ["syntax_error", "permission_error", "task_clarification"]
+
 # Pfade
 [paths]
 akte_dir = "../akte"
