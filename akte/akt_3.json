@@ -1,0 +1,118 @@
+{
+  "titel": "Akt 3: Das Tribunal der Lügen",
+  "beschreibung": "Oeffentliches Tribunal gegen Elrond Tusk. Die Gruppe muss Beweise praesentieren und die Geschworenen ueberzeugen. waehrend des Prozesses wird **ein zufaelliger Spielercharakter** von Tusks Anhängern als Geisel genommen. Am Ende stuermen Tusks Anhaenger den Saal.",
+  "grenzen": {
+    "ort": "Sharn, Distrikt Durgon’s Bridge (Grosser Gerichtssaal)",
+    "zeitlimit": "Ein Tag"
+  },
+  "npcs": [
+    {
+      "name": "Elrond Tusk",
+      "beschreibung": "Jetzt ohne seinem Teleportationsring, aber mit dem Echo-Kristall. Nutzt jeden Trick, um die Gruppe zu diskreditieren. Seine Stimme hallt durch den Kristall und beeinflusst die Menge.",
+      "gesinnung": "CE (Chaotisch Boese)",
+      "ziele": ["Freispruch erzwingen", "Die Gruppe als Luegen entlarven", "Sharn weiter manipulieren"],
+      "stats": {"HP": 50, "AC": 16, "angriff": "+7 (Echo-Kristall, 2d10 Psychisch oder Sturmherrufer-Stab, 2d8 Blitz)"}
+    },
+    {
+      "name": "Lady Justice",
+      "beschreibung": "Die neutrale Richterin mit eiserner Miene. Faellt Urteile basierend auf Beweisen und Zeugenaussagen. Sie erkennt, dass etwas nicht stimmt, als der Spielercharakter entfuehrt wird.",
+      "gesinnung": "LG (Gesetzlich Gut)",
+      "ziele": ["Gerechtigkeit finden"],
+      "stats": {"HP": 15, "AC": 12, "angriff": "-"}
+    },
+    {
+      "name": "Meister Blufford",
+      "beschreibung": "Tusks schlafriger Anwalt – ein charismatischer Bard, der alles drehen kann. Traegt teure Roben und laechelt haeufig. Nutzt den Echo-Kristall, um seine Stimme zu verstaerken.",
+      "gesinnung": "NE (Neutral Boese)",
+      "ziele": ["Tusk freisprechen", "Die Gruppe in Misskredit bringen"],
+      "stats": {"HP": 25, "AC": 14, "angriff": "+5 (Zauber: Suggestion, Charm Person)"}
+    },
+    {
+      "name": "Waechter der Narrative (Elite)",
+      "beschreibung": "Tusks beste Kaempfer – Doppelgaenger mit echten Waffen. Sie entfuehren einen Spielercharakter als Geisel.",
+      "gesinnung": "LE (Gesetzlich Boese)",
+      "ziele": ["Das Tribunal stoppen", "Die Gruppe eliminieren", "Geisel nehmen"],
+      "stats": {"HP": 28, "AC": 16, "angriff": "+6 (Rapier, 1d8+3 oder Doppelgaenger-Taeuschung)"}
+    },
+    {
+      "name": "Harper-Verbündeter",
+      "beschreibung": "Ein Harper-Agent, der der Gruppe hilft, wenn sie in Akt 1 Beweise gesichert hat.",
+      "gesinnung": "NG (Neutral Gut)",
+      "ziele": ["Tusk veroeurteilen", "Die Gruppe unterstuetzen"],
+      "stats": {"HP": 22, "AC": 15, "angriff": "+4 (Langschwert, 1d8+2)"}
+    },
+    {
+      "name": "Buerger von Sharn (neutral)",
+      "beschreibung": "Normaler Stadtbewohner, der als Geschworener fungiert. Kann von beiden Seiten ueberzeugt werden. Reaktionen aendern sich basierend auf der Entscheidung der Gruppe.",
+      "gesinnung": "N (Neutral)",
+      "ziele": ["Gerechtigkeit sehen"],
+      "stats": {"HP": 8, "AC": 11, "angriff": "-"}
+    }
+  ],
+  "schlüssel_ereignisse": [
+    {
+      "titel": "Eroeffnung des Tribunals",
+      "beschreibung": "Lady Justice eroeffnet die Verhandlung. Tusks Anwalt beginnt mit einer Rede, die die Gruppe als Luegen hinstellt. Die Gruppe kann Beweise vorlegen. Die Atmosphäre ist angespannt – die Menge fluestert.",
+      "bild": "/images/tribunal_eroeffnung.jpg"
+    },
+    {
+      "titel": "Beweisphase",
+      "beschreibung": "Die Gruppe praesentiert ihre Beweise (aus Akt 1 und 2). Je mehr Beweise, desto mehr Geschworene sind ueberzeugt. Meister Blufford versucht, jeden Beweis zu widerlegen. Tusk nutzt den Echo-Kristall, um die Menge gegen die Gruppe aufzuhetzen.",
+      "bild": null
+    },
+    {
+      "titel": "Geiselnahme!",
+      "beschreibung": "Plötzlich stuermen 4 Waechter der Narrative den Saal! Sie neutralisieren die Wachen und **entfuehren einen zufaelligen Spielercharakter** als Geisel. Ein Waechter haelt ein Messer an seine Kehle und ruft: *\"Einen Schritt näher, und euer Freund stirbt!\"* Die Menge ist schockiert. Lady Justice ruft zur Ruhe auf, aber Tusk nutzt das Chaos.",
+      "bild": "/images/tribunal_geiselnahme.jpg"
+    },
+    {
+      "titel": "Sturm auf das Tribunal",
+      "beschreibung": "Tusks Anhaenger stuermen den Gerichtssaal! Zwischen den kaempfenden Massen muss die Gruppe eine Entscheidung treffen: ihren gefangenen Freund retten oder Tusk endgueltig stoppen.",
+      "bild": "/images/tribunal_sturm.jpg"
+    }
+  ],
+  "checkpoints": [
+    {
+      "beschreibung": "Beweise praesentieren (basierend auf Akt 1 und 2)",
+      "entscheidung": "Beweisphase",
+      "auswirkungen": {
+        "beweise_aus_akt1": "+2 Beweismittel (falls Kaempfen erfolgreich war)",
+        "beweise_aus_akt2": "+3 Beweismittel (Tusks Notizen, Echo-Kristall)",
+        "insgesamt": "Mehr Beweise = mehr Geschworene auf Seiten der Gruppe. Bei 4+ Beweismitteln sind die meisten Geschworenen ueberzeugt, dass Tusk schuldig ist."
+      }
+    },
+    {
+      "beschreibung": "Ein Spielercharakter wurde als Geisel genommen! Was tut die Gruppe?",
+      "entscheidung": "Moralisches Dilemma",
+      "optionen": [
+        {
+          "name": "Spielercharakter retten",
+          "beschreibung": "Die Gruppe konzentriert sich darauf, ihren gefangenen Freund zu befreien. Waechter mit der Geisel haben +2 AC und Vorteil auf Angriffswuerfe.",
+          "erfolg": "Der Charakter wird gerettet! ABER: Tusk nutzt die Ablenkung. Er aktiviert den Echo-Kristall,redet sich frei und flieht durch den Hinterausgang (falls die Gruppe den Geheimgang in Akt 2 fand, wissen sie, wohin er flieht). Die Gruppe muss gegen die restlichen Waechter kaempfen.",
+          "konsequenz": "**Ende A - Die Luege siegt:** Tusk entkommt. Die Stadt bleibt in seinem Griff, doch die Gruppe hat ihre Ehre bewahrt. Letzter Satz: *'Die Stadt der tausend Lügen blieb – doch ihr wisst, wer die Wahrheit Sprite. Und das macht euch gefährlich.'"
+        },
+        {
+          "name": "Spielercharakter opfern",
+          "beschreibung": "Die Gruppe ignoriert die Geisel und stuermt direkt auf Tusk zu. Sie muessen die Waechter besiegen, ohne auf die Geisel zu achten. Der gefangene Charakter stirbt, wenn die Gruppe nicht innerhalb von 3 Runden handelt.",
+          "erfolg": "Tusk wird von den Waechtern und der Gruppe umringt. Der Echo-Kristall wird zerstoert. Tusk gibt auf und wird gefangen genommen. Der gefangene Spielercharakter stirbt heldenhaft.",
+          "konsequenz": "**Ende B - Die harte Wahrheit:** Tusk sitzt im Kerker, doch die Gruppe trauert um ihren gefallenen Kameraden. Die Stadt feiert sie als Helden – doch sie wissen, was sie geopfert haben. Letzter Satz: *'Sharn war gerettet. Doch einer von euch war der Preis. War es das wert?'"
+        }
+      ]
+    }
+  ],
+  "fallenzahl": 0,
+  "fallen": [],
+  "abschlussbedingung": "Das Tribunal endet mit dem moralischen Dilemma und der finalen Entscheidung. Ein Spielercharakter stirbt (oder wird gerettet), und Tusk wird entweder gefangen oder entkommt.",
+  "bilder": ["/images/tribunal_eroeffnung.jpg", "/images/tribunal_geiselnahme.jpg", "/images/tribunal_sturm.jpg"],
+  "auswirkungen_aus_vorherigen_akten": {
+    "akt1_beweise": "Falls die Gruppe in Akt 1 Beweise gesichert hat (+2 auf Beweisphase)",
+    "akt1_harpers_vertrauen": "Falls die Gruppe die Harpers ueberzeugt hat (+1 Harper-Verbündeter im Tribunal, der bei der Geiselbefreiung hilft)",
+    "akt2_gefangener_befragt": "Falls die Gruppe den Gefangenen erfolgreich befragt hat (kennt Tusks Schwaeche: Vorteil im finalen Kampf gegen Tusk)",
+    "akt2_geheimgang": "Falls die Gruppe den Geheimgang genommen hat (kennt Hinterausgang: kann Tusks Fluchtweg blockieren oder nutzen)"
+  },
+  "hinweise": {
+    "geisel_auswahl": "Der Spielleiter (oder ein Zufallsgenerator) waehlt einen Spielercharakter als Geisel aus. Dies sollte fair und dramatisch sein.",
+    "tusk_flucht": "Falls Tusk flieht, koennte dies den Weg fuer eine Fortsetzung offen lassen (z.B. eine neue Kampagne gegen seinen 'Himmelsnetz'-Kult).",
+    "charakter_tod": "Der Tod des Spielercharakters sollte nicht permanent sein, wenn die Gruppe das nicht moechte – aber die Entscheidung sollte Konsequenzen haben (z.B. der Charakter verliert eine Stufe oder hat ein traumatisches Erlebnis)."
+  }
+}

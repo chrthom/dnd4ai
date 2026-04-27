@@ -1,0 +1,65 @@
+{
+  "name": "wuerfel",
+  "typ": "Slash-Kommando",
+  "kommando": "/wuerfel [Expression]",
+  "beschreibung": "Simuliert Würfelwürfe für D&D 5e. Unterstützt Standard-Würfelnotationen wie 1d20, 2d6+3, 1d100 etc.",
+  "parameter": {
+    "expression": {
+      "typ": "string",
+      "beispiel": ["1d20", "2d6+4", "1d100", "3d8-2"],
+      "beschreibung": "Würfelausdruck in Standard-D&D-Notation. Unterstützt: d4, d6, d8, d10, d12, d20, d100. Operatoren: +, -",
+      "regeln": {
+        "maximal": "10 Würfel pro Ausdruck (z.B. 10d6)",
+        "modifikatoren": "Beliebige ganze Zahlen als Modifier (+/-)",
+        "mehrfach": "Mehrere Würfelausdrücke durch Komma getrennt (z.B. /wuerfel 1d20,1d6)"
+      }
+    }
+  },
+  "funktion": {
+    "schritte": [
+      "1. Expression parsen (Anzahl Würfel, Seiten, Modifier)",
+      "2. Für jeden Würfel: Zufallszahl zwischen 1 und Seiten generieren",
+      "3. Summe aller Würfel + Modifier berechnen",
+      "4. Einzelne Würfe und Endergebnis zurückgeben"
+    ],
+    "beispiel_abwicklung": {
+      "eingabe": "/wuerfel 2d6+3",
+      "prozess": "Würfel 1: 4, Würfel 2: 6 → Summe: 10 + 3 = 13",
+      "ausgabe": "Du würfelst **2d6+3**: [4, 6] → **13**"
+    }
+  },
+  "ausgabe_format": {
+    "einfach": "Du würfelst **{expression}**: {ergebnis}",
+    "detailliert": "Du würfelst **{expression}**: [{würfel1}, {würfel2}, ...] + {modifier} → **{summe}**"
+  },
+  "beispiele": [
+    {
+      "eingabe": "/wuerfel 1d20",
+      "ausgabe": "Du würfelst **1d20**: **17**"
+    },
+    {
+      "eingabe": "/wuerfel 3d6",
+      "ausgabe": "Du würfelst **3d6**: [2, 5, 6] → **13**"
+    },
+    {
+      "eingabe": "/wuerfel 1d20+5",
+      "ausgabe": "Du würfelst **1d20+5**: 14 + 5 → **19**"
+    },
+    {
+      "eingabe": "/wuerfel 2d10-2",
+      "ausgabe": "Du würfelst **2d10-2**: [7, 3] - 2 → **8**"
+    }
+  ],
+  "fehlerbehandlung": {
+    "ungueltige_expression": "'Ungültiger Würfelausdruck. Beispiel: /wuerfel 1d20 oder /wuerfel 2d6+3'",
+    "zu_viele_wuerfel": "'Maximal 10 Würfel pro Ausdruck erlaubt.'",
+    "ungueltiger_wuerfeltyp": "'Unbekannter Würfeltyp. Unterstützt: d4, d6, d8, d10, d12, d20, d100'"
+  },
+  "verwendung": [
+    "Angriffswürfe (1d20 + Modifikator)",
+    "Schadenswürfe (z.B. 1d8+5 für Langschwert)",
+    "Fertigkeitsproben (1d20 + Fertigkeitsbonus)",
+    "Zufällige Ereignisse (1d100 für Tabellen)",
+    "Charaktererstellung (4d6, niedrigster wird gestrichen)"
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "titel": "Akt 2: Die Gedankenschmiede",
+  "beschreibung": "Die Gruppe dringt in Elrond Tusks geheime Gedankenschmiede ein – ein Alchemielabor in Tavick’s Landing, wo er Geschichten 'schmiedet' und die Wahrheit von Sharn umformt. Ziel: Beweise für seine Manipulationen finden.",
+  "grenzen": {
+    "ort": "Sharn, Distrikt Tavick’s Landing (versteckte Werkstatt unter einer Bank)",
+    "zeitlimit": "Bis Sonnenaufgang (Tusk kehrt bei Taganbruch zurück)"
+  },
+  "npcs": [
+    {
+      "name": "Elrond Tusk",
+      "beschreibung": "Charismatischer Mann Mitte 40 mit wildem Haar und einem Sturmherrufer-Stab. Traegt einen Umhang mit eingestickten Schaltkreisen (Runen). Spricht in Raetseln und ueberzeugt mit fast hypnotischer Stimme. Besitzt den Echo-Kristall und das Himmelsnetz-Artefakt.",
+      "gesinnung": "CE (Chaotisch Boese)",
+      "ziele": ["Sharns Narrativ kontrollieren", "Die Harpers diskreditieren", "Seine Macht ausbauen"],
+      "stats": {"HP": 50, "AC": 16, "angriff": "+7 (Sturmherrufer-Stab, 2d8 Blitz oder Echo-Kristall-Verstaerkung, 1d10 Psychisch)"}
+    },
+    {
+      "name": "Warforged-Wache",
+      "beschreibung": "Mechanische Waechter mit leuchtenden blauen Augen, programmiert, um Eindringlinge zu eliminieren.",
+      "gesinnung": "N (Neutral)",
+      "ziele": ["Die Gedankenschmiede beschuetzen"],
+      "stats": {"HP": 35, "AC": 18, "angriff": "+5 (Stahlfaust, 1d10+3)"}
+    },
+    {
+      "name": "Gefangener Harper-Agent",
+      "beschreibung": "Verwunderter, aber entschlossener Mann Mitte 30. Hat Informationen ueber Tusks Plaene, aber wurde moeglicherweise manipuliert.",
+      "gesinnung": "NG (Neutral Gut)",
+      "ziele": ["Die Gruppe warnen", "Tusks Plaene aufdecken"],
+      "stats": {"HP": 12, "AC": 12, "angriff": "-"}
+    },
+    {
+      "name": "Alchemist-Lehrling",
+      "beschreibung": "Junger, nervoeser Mensch, der fuer Tusk arbeitet. Weiss nicht, was wirklich in der Schmiede passiert.",
+      "gesinnung": "CN (Chaotisch Neutral)",
+      "ziele": ["Ueberleben", "Seinen Meister nicht enttaeuschen"],
+      "stats": {"HP": 10, "AC": 11, "angriff": "+2 (Alchemisten-Flasche, 1d6 Sauer)"}
+    }
+  ],
+  "schlüssel_ereignisse": [
+    {
+      "titel": "Ankunft an der Gedankenschmiede",
+      "beschreibung": "Die Gruppe findet den versteckten Eingang zur Werkstatt unter der 'Bank von Tavick'. Drei Wege fuehren hinein: Haupteingang (bewacht), Luetzungsschaechte (eng), Geheimgang (versteckt).",
+      "bild": "/images/gedankenschmiede_eingang.jpg"
+    },
+    {
+      "titel": "Erforschung der Schmiede",
+      "beschreibung": "In der Werkstatt finden sich Alchemielabor mit kochenden Essenzen, Schreibpulte mit halbfertigen 'Geschichten', ein Gefangener Harper-Agent in einer Zelle, und Tusks Notizen ueber das 'Himmelsnetz'-Projekt.",
+      "bild": "/images/gedankenschmiede_innen.jpg"
+    },
+    {
+      "titel": "Begegnung mit Elrond Tusk",
+      "beschreibung": "Tusk kehrt frueher als erwartet zurueck! Er ist ueberrascht, die Gruppe zu sehen. Kurzer Kampf – wenn Tusk zu viel Schaden nimmt, aktiviert er seinen Teleportationsring und flieht. Er hinterlaesst den Echo-Kristall.",
+      "bild": "/images/tusk_begegnung.jpg"
+    }
+  ],
+  "checkpoints": [
+    {
+      "beschreibung": "Welchen Weg waehlt die Gruppe, um einzudringen?",
+      "entscheidung": "Eingangsweg",
+      "optionen": [
+        {
+          "name": "Haupteingang (Taeuschung DC 15)",
+          "erfolg": "Die Gruppe ueberredet die Warforged-Wachen, sie durchzulassen (z.B. als Inspekteure getarnt).",
+          "misserfolg": "Kampf mit 2 Warforged-Wachen (vermeidbar durch Fluechten oder Verhandeln)."
+        },
+        {
+          "name": "Luetzungsschaechte (Dex DC 13)",
+          "erfolg": "Schnell, aber eng. Gruppe kommt unentdeckt rein.",
+          "misserfolg": "Zeit verlieren (1 Stunde). Tusk kehrt frueher zurueck und ist besser vorbereitet."
+        },
+        {
+          "name": "Geheimgang (Wis Perzeption DC 14)",
+          "erfolg": "Finde versteckten Eingang durch alte Abwasserrohre.",
+          "misserfolg": "Loest klassische Falle aus (Giftpfeile: Dex DC 13 oder 1d6 Gift)."
+        }
+      ]
+    },
+    {
+      "beschreibung": "Soll die Gruppe den gefangenen Harper-Agenten befragen?",
+      "entscheidung": "Gefangenen befragen",
+      "optionen": [
+        {
+          "name": "Befragen (Int/Insight DC 12)",
+          "erfolg": "Er verbessert wertvolle Info: Tusk plant, den Echo-Kristall im Tribunal einzusetzen. Sichtweise: Kennt Tusks Schwaeche (Vorteil im finalen Kampf).",
+          "misserfolg": "Falschinformation: Tusk hat ihn manipuliert. Er gibt falsche Hinweise."
+        },
+        {
+          "name": "Ignorieren",
+          "erfolg": "Keine Zeit verlieren, aber keine zusätzlichen Infos.",
+          "misserfolg": "-"
+        }
+      ]
+    }
+  ],
+  "fallenzahl": 2,
+  "fallen": [
+    {
+      "name": "Giftpfeil-Falle",
+      "typ": "Klassisch (mechanisch)",
+      "beschreibung": "Versteckte Bogenmechanismen an der Decke. Ausloeser: Druckplatte am Boden.",
+      "auswirkung": "Dex DC 13 zum Ausweichen oder 1d6 Gift-Schaden und 1 Runde benachteiligt."
+    },
+    {
+      "name": "Halluzinations-Spiegel",
+      "typ": "Magisch",
+      "beschreibung": "Ein Spiegel in der Schmiede, der jedem Betrachter eine andere Realitaet zeigt (z.B. eigene Tod, Geliebte in Gefahr).",
+      "auswirkung": "Weisheit DC 14 oder 1 Runde verwirrt (greift Verbuendete an)."
+    }
+  ],
+  "abschlussbedingung": "Die Gruppe findet Beweise gegen Tusk und dieser flieht nach kurzem Kampf.",
+  "bilder": ["/images/gedankenschmiede_eingang.jpg", "/images/gedankenschmiede_innen.jpg", "/images/tusk_begegnung.jpg"]
+}

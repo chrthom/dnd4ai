@@ -1,0 +1,181 @@
+{
+  "name": "kampf",
+  "typ": "Skill (intern)",
+  "beschreibung": "Verwaltet die Kampfabwicklung für D&D 5e. Wird automatisch aufgerufen, wenn ein Kampf beginnt (z.B. durch Gegnerkontakt oder /kampf starten). Führt Runde für Runde aus, bis der Kampf beendet ist.",
+  "ausloeser": [
+    "Gegnerkontakt (z.B. Hinterhalt in Akt 1)",
+    "Spielerinitiation (z.B. Angrenzen eines Gegners)",
+    "Manuell über Skill-Aufruf"
+  ],
+  "initialisierung": {
+    "schritte": [
+      "1. Teilnehmer sammeln (Spielercharaktere + NPCs)",
+      "2. Initiative berechnen (1d20 + DEX-Modifikator für jeden)",
+      "3. Initiative-Reihenfolge erstellen (höchste zu niedrigste)",
+      "4. Kampfstarttext anzeigen (Beschreibung der Situation)",
+      "5. Erste Runde beginnt mit dem Teilnehmer mit höchster Initiative"
+    ],
+    "beispiel": {
+      "situation": "Hinterhalt in Akt 1: 3 Spieler vs. 2 Wächter der Narrative",
+      "initiative": {
+        "Gromm (Kämpfer, DEX 14 → +2)": "1d20+2 = 18",
+        "Lyssa (Waldläufer, DEX 16 → +3)": "1d20+3 = 21",
+        "Thalion (Magier, DEX 12 → +1)": "1d20+1 = 12",
+        "Wächter 1": "1d20 = 15",
+        "Wächter 2": "1d20 = 8"
+      },
+      "reihenfolge": ["Lyssa (21)", "Gromm (18)", "Wächter 1 (15)", "Thalion (12)", "Wächter 2 (8)"]
+    }
+  },
+  "rundenablauf": {
+    "phase_1_spieler": {
+      "beschreibung": "Aktiver Spielercharakter ist am Zug.",
+      "aktionen": [
+        {
+          "name": "Angreifen",
+          "beschreibung": "Angriffswurf (1d20 + Angriffsbonus) gegen Gegner. Bei Treffer: Schadenswürfe.",
+          "schritte": [
+            "Ziel auswählen (NPC)",
+            "Angriffswurf berechnen (1d20 + Angriffsbonus)",
+            "Vergleich mit gegnerischem AC",
+            "Bei Treffer: Schadenswürfe (Waffenwürfel + Modifikator) berechnen",
+            "Gegnerische HP aktualisieren"
+          ],
+          "beispiel": "Gromm greift Wächter 1 an: 1d20+5 = 22 (trifft AC 15). Schaden: 1d8+3 = 11. Wächter 1 hat noch 14/22 HP."
+        },
+        {
+          "name": "Zauber wirken",
+          "beschreibung": "Zauber auswählen und wirken (Rettungswurf oder Angriffswurf je nach Zauber).",
+          "schritte": [
+            "Zauber auswählen",
+            "Zauberwirker-Tests (falls nötig: Konzentration, Komponenten)",
+            "Gegnerischer Rettungswurf oder Angriffswurf durchführen",
+            "Effekte anwenden"
+          ]
+        },
+        {
+          "name": "Besondere Fähigkeit",
+          "beschreibung": "Klassen- oder Rassenspezifische Fähigkeit nutzen (z.B. Wut, Action Surge, Wild Shape).",
+          "beispiel": "Barbar aktiviert Wut: +2 Schadensbonus für 1 Minute."
+        },
+        {
+          "name": "Bewegung",
+          "beschreibung": "Charakter bewegt sich (Standard: 5 Fuß pro 5 Fuß Beweung).",
+          "regeln": "Kein Opportunity Attack, wenn sich Charakter aus dem Nahkampf zurückzieht (5-Fuß-Schritt)."
+        },
+        {
+          "name": "Gegenstand nutzen",
+          "beschreibung": "Trank trinken, Gegenstand werfen, etc."
+        },
+        {
+          "name": "Verteidigen",
+          "beschreibung": "Charakter erhält +2 auf AC bis zur nächsten Runde."
+        },
+        {
+          "name": "Ausweichen",
+          "beschreibung": "Charakter weicht allen Angriffe in dieser Runde aus (DEX-Rettungswurf DC 15 für jeden Angriff)."
+        }
+      ],
+      "fragen": "Was moechtest du tun? (Angreifen/Zauber/Fähigkeit/Bewegung/Gegenstand/Verteidigen/Ausweichen/Flüchten)"
+    },
+    "phase_2_npc": {
+      "beschreibung": "NPC ist am Zug. KI entscheidet Aktion basierend auf NPC-Typ und Situation.",
+      "npc_verhalten": {
+        "Standard-Gegner": "Greift nächsten Spielercharakter an (nahe → Nahkampf, weit → Fernkampf)",
+        "Taktischer Gegner": "Nutzt Umgebungsvorteile (z.B. Deckung, Fallen)",
+        "Magischer Gegner": "Wirkt Zauber oder nutzt magische Fähigkeiten",
+        "Flüchtender Gegner": "Versucht zu fliehen, wenn HP < 50%"
+      },
+      "automatisch": true,
+      "beschreibung": "Die KI wählt die Action automatisch aus und führt sie durch (Würfeln, Trefferberechnung, Schadensberechnung)."
+    },
+    "phase_3_ende_pruefen": {
+      "beschreibung": "Prüfen, ob Kampf beendet ist.",
+      "abbruchbedingungen": [
+        "Alle Gegner besiegt (HP ≤ 0)",
+        "Alle Spielercharaktere besiegt (HP ≤ 0)",
+        "Gegner fliehen (z.B. Tusk in Akt 2)",
+        "Spieler fliehen",
+        "Kapitulation",
+        "Zeitlimit erreicht"
+      ]
+    }
+  },
+  "npc_ki-logik": {
+    "aggressiv": {
+      "beschreibung": "Greift immer den naechsten/schwächsten Spieler an",
+      "beispiel": "Wächter der Narrative"
+    },
+    "taktisch": {
+      "beschreibung": "Nutzt Deckung, Flankenangriffe, oder fokussiert den stärksten Zauberwirker",
+      "beispiel": "Elrond Tusk (nutzt Echo-Kristall für Verbesserung)"
+    },
+    "magisch": {
+      "beschreibung": "Nutzt Zauber oder Fähigkeiten, die mehrere Ziele treffen",
+      "beispiel": "Meister Blufford (Charm Person, Suggestion)"
+    },
+    "fluechtend": {
+      "beschreibung": "Versucht zu fliehen, wenn HP < 50% oder wenn überzahlt",
+      "beispiel": "Elrond Tusk in Akt 2 (flieht, wenn zu viel Schaden)"
+    }
+  },
+  "schadensberechnung": {
+    "automatisch": true,
+    "formel": "(Würfelwürfe) + (Attributsmodifikator) + (sonstige Boni)",
+    "beispiel": {
+      "nahkampf": "Langschwert: 1d8 (Waffe) + 3 (STR-Modifikator) = 1d8+3",
+      "fernkampf": "Kurzbogen: 1d6 (Waffe) + 2 (DEX-Modifikator) = 1d6+2",
+      "zauber": "Feuerball: 8d6 (Level 5) oder 5d6 (Level 3)"
+    },
+    "trefferberechnung": {
+      "formel": "1d20 + Angriffsbonus ≥ Gegner-AC",
+      "kritischer_treffer": "Natürliche 20 → Maximalschaden + zusätzliche Würfel",
+      "fehlschlag": "Natürliche 1 → Automatisches Fehlschlagen"
+    }
+  },
+  "ausgabe": {
+    "initiative": "Initiative-Reihenfolge: [Charakter 1 (21)], [Charakter 2 (18)], [Gegner 1 (15)]...",
+    "rundenstart": "--- Runde {nr} ---",
+    "spielerzug": "[Charakter] ist am Zug. Aktuelle HP: {hp}/{max_hp}",
+    "npc_zug": "[NPC] {aktion} gegen [Ziel]: {ergebnis}",
+    "kampfende": {
+      "sieg": "Die Gruppe hat gesiegt! {erfahrungspunkte} XP verteilt.",
+      "niederlage": "Die Gruppe wurde besiegt... (oder flieht)",
+      "flucht": "[Gegner/NPC] flieht aus dem Kampf!"
+    }
+  },
+  "spezialfaelle": {
+    "tusk_flucht": {
+      "ausloeser": "Tusks HP < 25% oder wenn er mehr als 3 Treffer in einer Runde erhält",
+      "aktion": "Aktiviert Teleportationsring und flieht",
+      "folgen": "Hinterlässt Echo-Kristall, Kampf endet"
+    },
+    "geisel_situation": {
+      "ausloeser": "Wächter hält Geisel (Akt 3)",
+      "regeln": "Wächter mit Geisel hat +2 AC und Vorteil auf Angriffe. Bei Tod des Wächters: Geisel wird freigelassen (oder stirbt, falls kritischer Treffer)."
+    },
+    "moralisches_dilemma": {
+      "ausloeser": "Geiselnahme in Akt 3",
+      "entscheidung": "Spieler müssen wählen: Geisel retten oder Tusk angreifen",
+      "konsequenzen": "Siehe Akt 3 Konzept"
+    }
+  },
+  "beispiele": [
+    {
+      "situation": "Kampf gegen 2 Wächter der Narrative (Akt 1)",
+      "ablauf": [
+        "KI: Initiative: Lyssa (21), Gromm (18), Wächter 1 (15), Thalion (12), Wächter 2 (8)",
+        "KI: --- Runde 1 ---",
+        "KI: Lyssa ist am Zug (18/18 HP). Was moechtest du tun?",
+        "Spieler: Angreifen Wächter 1",
+        "KI: Lyssa wirft 1d20+5: 19 (trifft AC 15). Schaden: 1d8+3 = 11. Wächter 1: 11/22 HP.",
+        "KI: Gromm ist am Zug (20/20 HP). Was moechtest du tun?",
+        "Spieler: Angreifen Wächter 1",
+        "KI: Gromm wirft 1d20+5: 25 (kritisch!). Schaden: 2d8+3 = 14. Wächter 1: -3/22 HP (besiegt).",
+        "KI: Wächter 1 ist besiegt!",
+        "KI: Wächter 2 greift Thalion an: 1d20+4 = 18 (trifft AC 12). Schaden: 1d6+2 = 5. Thalion: 13/15 HP.",
+        "KI: Thalion ist am Zug (13/15 HP)..."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+# Vibe CLI Configuration for D&D Dungeon Master KI
+# Kampagne: "Die Stadt der tausend Lügen" (Eberron)
+
+[agent]
+name = "dnd-dm"
+description = "Dungeon Master für D&D 5e Kampagne 'Die Stadt der tausend Lügen' in Eberron"
+provider = "mistral"
+model = "mistral-large"
+
+# Skill-Konfiguration
+[skills]
+# Aktivierte Skills für den D&D DM
+enabled = ["wuerfel", "charakter", "kampf"]
+
+# Skill-spezifische Konfiguration
+[skills.wuerfel]
+name = "wuerfel"
+description = "D&D Würfelwürfe ausführen"
+user_invokable = true
+
+[skills.charakter]
+name = "charakter"
+description = "Interaktive D&D Charaktererstellung"
+user_invokable = true
+
+[skills.kampf]
+name = "kampf"
+description = "Kampfabwicklung mit Initiative und NPC-KI"
+user_invokable = false
+
+# Spiel-Konfiguration
+[game]
+welt = "Eberron"
+stadt = "Sharn"
+kampagne = "Die Stadt der tausend Lügen"
+system = "D&D 5e"
+
+# Kommunikations-Konfiguration
+[communication]
+platform = "Discord"
+channel_name = "abenteuer-1"
+poll_interval = 30  # Sekunden
+
+# Pfade
+[paths]
+akte_dir = "../akte"
+skills_dir = "../skills"
+decisions_dir = "../decisions"
+images_dir = "../images"

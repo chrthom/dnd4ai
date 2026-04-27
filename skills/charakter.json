@@ -1,0 +1,151 @@
+{
+  "name": "charakter",
+  "typ": "Slash-Kommando/Skill",
+  "kommando": "/charakter erstellen",
+  "beschreibung": "Interaktive Charaktererstellung für D&D 5e in der Welt Eberron. Führt Spieler durch Rasse, Klasse, Attribute (4d6 Methode), Fertigkeiten und Ausrüstung. Kann als Akt 0 (/akt 0) oder separat aufgerufen werden.",
+  "parameter": {
+    "interaktiv": {
+      "typ": "boolean",
+      "standard": true,
+      "beschreibung": "Falls true, fragt die KI Schritt für Schritt nach Bestätigung. Falls false, werden alle Attribute automatisch gewürfelt und zugewiesen."
+    }
+  },
+  "schritte": [
+    {
+      "name": "Rassenauswahl",
+      "beschreibung": "Spieler wählt eine Rasse aus Eberron. Jede Rasse hat spezielle Attribute-Boni und Fähigkeiten.",
+      "optionen": [
+        {"name": "Mensch", "boni": "+1 auf alle Attribute", "besonderheit": "Extra Sprache"},
+        {"name": "Elf", "boni": "+2 DEX, +1 INT", "besonderheit": "Dunkelsicht, Feenblut"},
+        {"name": "Zwerg", "boni": "+2 CON, +1 STR", "besonderheit": "Dunkelsicht, Zwergenresilienz"},
+        {"name": "Halbling", "boni": "+2 DEX, +1 CHA", "besonderheit": "Glück, Behände"},
+        {"name": "Ork", "boni": "+2 STR, +1 CON", "besonderheit": "Drohende Präsenz"},
+        {"name": "Halbelf", "boni": "+2 CHA, +1 auf zwei Attribute", "besonderheit": "Dunkelsicht, Feenblut"},
+        {"name": "Gnom", "boni": "+2 INT, +1 CON", "besonderheit": "Gnomische List"},
+        {"name": "Drachenblütiger", "boni": "+2 CHA, +1 STR", "besonderheit": "Drachenatmung (1/Tag)"},
+        {"name": "Warforged", "boni": "+2 CON, +1 auf ein Attribute", "besonderheit": "Konstrukt (kein Essen/Schlafen nötig, Immun gegen einige Effekte)"},
+        {"name": "Changeling", "boni": "+2 CHA, +1 auf ein Attribute", "besonderheit": "Gestaltwandler (1/Tag, 1 Stunde, bekannte Person)"},
+        {"name": "Kalashtar", "boni": "+2 WIS, +1 CHA", "besonderheit": "Telepathie, Geist der Ahnen"}
+      ],
+      "fragen": [
+        "Welche Rasse moechtest du spielen? (1-10 oder Name)"
+      ]
+    },
+    {
+      "name": "Klassenauswahl",
+      "beschreibung": "Spieler wählt eine Klasse. Jede Klasse hat spezielle Fähigkeiten, Würfel für Trefferpunkte und Startausrüstung.",
+      "optionen": [
+        {"name": "Barbar", "trefferwürfel": "d12", "primär": ["STR", "CON"], "besonderheit": "Wut (Raserei im Kampf)"},
+        {"name": "Barde", "trefferwürfel": "d8", "primär": ["CHA", "DEX"], "besonderheit": "Inspiration, Magie"},
+        {"name": "Druide", "trefferwürfel": "d8", "primär": ["WIS", "CON"], "besonderheit": "Wildgestalt, Naturmagie"},
+        {"name": "Kleriker", "trefferwürfel": "d8", "primär": ["WIS", "STR/CON"], "besonderheit": "Göttliche Magie, Heilung"},
+        {"name": "Waldläufer", "trefferwürfel": "d10", "primär": ["DEX", "WIS"], "besonderheit": "Favored Enemy, Tierbegleiter"},
+        {"name": "Kämpfer", "trefferwürfel": "d10", "primär": ["STR", "CON"], "besonderheit": "Kampfstil, Action Surge"},
+        {"name": "Mönch", "trefferwürfel": "d8", "primär": ["DEX", "WIS"], "besonderheit": "Leerer Hand Kampf, Beweglichkeit"},
+        {"name": "Paladin", "trefferwürfel": "d10", "primär": ["STR", "CHA"], "besonderheit": "Göttlicher Sinn, Heilige Aufforderung"},
+        {"name": "Schurke", "trefferwürfel": "d8", "primär": ["DEX", "INT"], "besonderheit": "Heimlichkeit, Hinterhalt"},
+        {"name": "Zauberer", "trefferwürfel": "d6", "primär": ["INT", "CON"], "besonderheit": "Arkanes Wissen, Zaubersprüche"},
+        {"name": "Hexenmeister", "trefferwürfel": "d8", "primär": ["CHA", "CON"], "besonderheit": "Paktmagie, Eldritch Invocations"},
+        {"name": "Artifex", "trefferwürfel": "d8", "primär": ["INT", "CON"], "besonderheit": "Magische Erfindungen, Infusionen"}
+      ],
+      "fragen": [
+        "Welche Klasse moechtest du spielen? (1-12 oder Name)"
+      ]
+    },
+    {
+      "name": "Attributsbestimmung (4d6 Methode)",
+      "beschreibung": "Für jedes der 6 Attribute (STR, DEX, CON, INT, WIS, CHA) wirst 4d6 geworfen, der niedrigste Würfel wird gestrichen, die Summe der anderen 3 ergibt den Attributswert. Die Werte können dann den Attributen zugewiesen werden.",
+      "methode": "4d6 undertake 3",
+      "beispiel": {
+        "würfe": ["4d6: [2, 4, 5, 1] → 4+5+2 = 11", "4d6: [3, 3, 6, 2] → 6+3+3 = 12"],
+        "ergebnis": "Attribute: 18, 16, 14, 12, 10, 8 (können den Attributen zugewiesen werden)"
+      },
+      "fragen": [
+        "Wie möchtest du die Würfe auf deine Attribute verteilen?"
+      ]
+    },
+    {
+      "name": "Attribute zuweisen",
+      "beschreibung": "Die gewürfelten Werte werden den 6 Attributen zugewiesen. Rassen- und Klassenboni werden addiert.",
+      "attribute": ["STR", "DEX", "CON", "INT", "WIS", "CHA"],
+      "beispiel": {
+        "werte": [15, 14, 13, 12, 10, 8],
+        "rassenboni": {"Zwerg": "+2 CON, +1 STR"},
+        "endwerte": {"STR": 16, "DEX": 14, "CON": 15, "INT": 12, "WIS": 10, "CHA": 8}
+      }
+    },
+    {
+      "name": "Fertigkeiten bestimmen",
+      "beschreibung": "Basierend auf Klasse und Rasse wählt der Spieler Fertigkeiten. KI berechnet die Modifikatoren (Attributswert - 10 / 2).",
+      "beispiel": {
+        "klasse": "Waldläufer",
+        "fertigkeiten": ["Athletik", "Naturkunde", "Wahrnehmung", "Überleben", "Heimlichkeit"],
+        "modifikatoren": {"Athletik": "+3 (STR 16)", "Wahrnehmung": "+1 (WIS 12)"}
+      }
+    },
+    {
+      "name": "Ausrüstung wählen",
+      "beschreibung": "Startausrüstung basierend auf Klasse und Rasse. Player kann zwischen Standardpaket oder individueller Auswahl wählen.",
+      "beispiel": {
+        "klasse": "Kämpfer",
+        "optionen": [
+          {"name": "Standard", "inhalt": ["Kettenhemd", "Langschwert", "Schild", "Kurzschwert", "Abenteurerpaket"]},
+          {"name": "Individuell", "inhalt": ["Wähle Waffen", "Wähle Rüstung", "Wähle Ausrüstungsgegenstände"]}
+        ]
+      }
+    },
+    {
+      "name": "Gesinnung bestimmen",
+      "beschreibung": "Spieler wählt eine Gesinnung (z.B. Chaotisch Gut, Neutral, Gesetzlich Böse).",
+      "optionen": [
+        "Gesetzlich Gut (LG)", "Neutral Gut (NG)", "Chaotisch Gut (CG)",
+        "Gesetzlich Neutral (LN)", "Echt Neutral (N)", "Chaotisch Neutral (CN)",
+        "Gesetzlich Böse (LE)", "Neutral Böse (NE)", "Chaotisch Böse (CE)"
+      ]
+    },
+    {
+      "name": "Finalisierung",
+      "beschreibung": "Der Charakterbogen wird als editierbarer, gepinnter Post im Discord-Channel erstellt.",
+      "ausgabe": {
+        "format": "Markdown (siehe AGENTS.md)",
+        "beispiel": "**Name:** Gromm der Zwerg\n===\n**Rasse:** Zwerg | **Klasse:** Kämpfer | **Level:** 1\n**Gesinnung:** Gesetzlich Gut\n**Attribute:** STR 16 | DEX 14 | CON 15 | INT 12 | WIS 10 | CHA 8\n**Fertigkeiten:** Athletik +3, Wahrnehmung +1\n**Ausrüstung:** Kettenhemd, Langschwert, Schild"
+      }
+    }
+  ],
+  "ausgabe": {
+    "discord_post": true,
+    "format": "Pinnbare Nachricht mit Markdown-Formatierung",
+    "automatische_berechnungen": [
+      "Trefferpunkte (Klassen-TW + CON-Modifikator)",
+      "Initiative (DEX-Modifikator)",
+      "Angriffsboni (basierend auf Klasse und Attributen)",
+      "Rettungswürfe (basierend auf Klasse)"
+    ]
+  },
+  "beispiel_ablauf": {
+    "eingabe": "/charakter erstellen",
+    "dialog": [
+      "KI: Willkommen zur Charaktererstellung! Welche Rasse möchtest du spielen? (Mensch, Elf, Zwerg, Halbling, Ork, ...)",
+      "Spieler: Zwerg",
+      "KI: Gute Wahl! Zwerge erhalten +2 CON und +1 STR. Welche Klasse? (Barbar, Kämpfer, Kleriker, ...)",
+      "Spieler: Kämpfer",
+      "KI: Perfekt. Jetzt würfeln wir deine Attribute mit 4d6 (höchster 3). Hier sind deine Werte: [15, 14, 13, 12, 10, 8]. Möchtest du sie zuweisen oder neu würfeln?",
+      "Spieler: Zuweisen",
+      "KI: Welchem Attribut möchtest du den Wert 15 zuweisen? (STR, DEX, CON, INT, WIS, CHA)",
+      "Spieler: STR",
+      "KI: Mit Rassenbonus: STR 17, CON 14. Fortfahren mit Fertigkeiten...",
+      "...",
+      "KI: Hier ist dein Charakterbogen: [Markdown-Post]"
+    ]
+  },
+  "fehlerbehandlung": {
+    "ungueltige_auswahl": "'Ungültige Auswahl. Bitte wähle aus den verfügbaren Optionen.'",
+    "abbruch": "'/charakter abbrechen' zum Beenden der Erstellung."
+  },
+  "eberron_spezifisch": {
+    "rassen": ["Warforged", "Changeling", "Kalashtar"],
+    "klassen": ["Artifex"],
+    "ausruestung": ["Drakonische Waffen", "Elementargebundene Items"],
+    "hinweis": "In Eberron gibt es zusätzliche magische Items, die als Startausrüstung gewählt werden können (z.B. 'Elementarstein' für kleine Magie-Effekte)."
+  }
+}
