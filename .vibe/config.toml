@@ -10,9 +10,29 @@ model = "mistral-large"
 # Skill-Konfiguration
 [skills]
 # Aktivierte Skills für den D&D DM
-enabled = ["wuerfel", "charakter", "kampf"]
+enabled = ["intro", "akt1", "akt2", "akt3", "wuerfel", "charakter", "kampf"]
 
 # Skill-spezifische Konfiguration
+[skills.intro]
+name = "intro"
+description = "Kampagnen-Intro mit Hintergrundgeschichte"
+user_invokable = true
+
+[skills.akt1]
+name = "akt1"
+description = "Akt 1: Die verfälschten Archive"
+user_invokable = true
+
+[skills.akt2]
+name = "akt2"
+description = "Akt 2: Die Gedankenschmiede"
+user_invokable = true
+
+[skills.akt3]
+name = "akt3"
+description = "Akt 3: Das Tribunal der Lügen"
+user_invokable = true
+
 [skills.wuerfel]
 name = "wuerfel"
 description = "D&D Würfelwürfe ausführen"

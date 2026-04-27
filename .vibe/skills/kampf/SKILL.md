@@ -4,6 +4,12 @@ description: Kampfabwicklung für D&D 5e mit automatischer Initiative und NPC-KI
 user-invocable: false
 ---
 
+## **Ausgabe-Regel (IMPORTANT)**
+- **Dieser Skill wird AUTOMATISCH durch die KI aufgerufen** (nicht durch Nutzer-Slash-Kommandos)
+- **Die KI antwortet NICHT im KI-Chat** – alle Kampfausgaben (Initiative, Angriffe, Schaden, NPC-Aktionen) gehen **EXKLUSIV** in Discord-Channel `abenteuer-1`
+- **Ausgabe civils:** Initiative-Reihenfolge, Rundenbeschreibungen, Angriffswürfe, Schadensberechnungen, NPC-Entscheidungen
+- **Format:** Siehe Kampfmechanik in AGENTS.md
+
 # D&D Kampf Skill
 
 ## Spezifikation

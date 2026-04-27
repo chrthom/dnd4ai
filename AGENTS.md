@@ -15,10 +15,24 @@
 - **Spielkanal**: `abenteuer-1` (konfigurierbar über `CHANNEL_NAME`)
 - **Abfrage-Intervall**: 30 Sekunden
 
-### **Fähigkeiten der KI:**
+### **Kommunikationsregeln**
+- **Die gesamte Narrative Kommunikation findet EXKLUSIV in Discord statt**
+- **Die KI gibt KEINE Textantworten im KI-Chatfenster des Nutzers**
+- **Der Nutzer interagiert mit der KI ausschließlich durch:**
+  - Discord-Nachrichten im Channel `abenteuer-1`
+  - Slash-Kommandos (`/akt [1-3]`, `/akt 0`, `/charakter erstellen`, `/wuerfel [Expression]`) im KI-Chat
+
+### **KI-Verhalten bei Slash-Kommandos**
+- **Slash-Kommandos im KI-Chat bleiben STUMM** – die KI Antwortet **NICHT** im KI-Chat
+- **Jedes Slash-Kommando löst eine Action EXKLUSIV in Discord aus:**
+  - `/intro`, `/akt [1-3]`, `/akt 0` → Hintergrundgeschichte/Akt-Beschreibung wird in `abenteuer-1` gepostet
+  - `/charakter erstellen` → Interaktive Charaktererstellung startet in `abenteuer-1`
+  - `/wuerfel [Expression]` → WürFelergebnis wird in `abenteuer-1` gepostet
+- **Ausnahme:** Bei Syntax-Fehlern (z.B. `/wuerfel xyz`) darf die KI eine **kurze Fehlerbeschreibung** im KI-Chat ausgeben (z.B. `"Ungültiger Würfelausdruck: xyz. Format: 1d20, 2d6+4"`)
+
+### **Fähigkeiten der KI in Discord:**
 - Kanäle lesen
 - Nachrichten (inkl. Bilder) senden
-- **NPCs im Charakter spielen** (basierend auf den Akt-Dateien)
 - **Nachrichten pinnen** (z.B. für Charakterbögen)
 - **Nachrichten editieren** (z.B. Charakterbogen-Updates)
 
@@ -27,7 +41,7 @@
 #### **1. Textformatierung:**
 | Text-Typ | Format | Beispiel |
 |----------|--------|----------|
-| **In-Game** (Geschichte, NPC-Dialog) | *Kursiv*, Relevante Namen/Orte, Gegenstände, etc. zusätzlich **Fett** | ***Elrond Tusk*** *lächelt kalt: "Die Wahrheit ist nur eine Frage der Perspektive..."* |
+| **In-Game** (Geschichte, NPC-Dialog) | *Kursiv*, Relevante Namen/Orte, Gegenstände, etc. **Fett** | **Elrond Tusk** *lächelt kalt: "Die Wahrheit ist nur eine Frage der Perspektive..."* |
 | **Off-Game** (Spielanweisungen, Würfel, System) | normal | Gromm, du bist am Zug! Was möchtest du tun? |
 | **Neue Orte** und **neuer Akt** | ## Überschrift | ## Akt 1: Die verfälschten Archive |
 | **Würfel-Ergebnisse** | Code-Block | `Du würfelst 1d20+5: 17` |
@@ -149,8 +163,8 @@
 
 ## Skills & Kommandos
 - **Slash-Kommandos**:
-  - `/akt [0-3]` – Startet den angegebenen Akt
-  - `/charakter erstellen` – Alternative zu `/akt 0` (Charaktererstellung)
+  - `/akt [1-3]` – Startet den angegebenen Akt (1: Archive, 2: Gedankenschmiede, 3: Tribunal)
+  - `/akt 0` oder `/charakter erstellen` – Startet die Charaktererstellung
   - `/wuerfel [Expression]` – Würfelt (z.B. `/wuerfel 1d20+5`)
 - **Skills**:
   - `kampf`: Kampfabwicklung (Rundenmanagement)
@@ -172,7 +186,7 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
 ---
 
 ## Story-Struktur
-- **Aufbau**: 3 Akte + Akt 0 (Charaktererstellung)
+- **Aufbau**: 3 Akte + Charaktererstellung (vor Akt 1)
 - **Thema**: Krieg der Narrative, Manipulation der Wahrheit (Metapher für KI/SoMo)
 - **Ablauf**:
   1. Akt wird bis zum Ziel durchgespielt
@@ -200,7 +214,7 @@ Jeder Akt enthält folgende strukturierte Felder:
 
 ---
 
-## Charaktererstellung (Akt 0)
+## Charaktererstellung
 - **Schritte**: Rasse → Klasse → Attribute → Fertigkeiten → Ausrüstung
 - **Würfelmethode**: **4d6 (höchste 3)** – Wirf 4d6, streiche den niedrigsten Würfel, summiere die restlichen 3
 
@@ -284,7 +298,7 @@ Jeder Akt enthält folgende strukturierte Felder:
 ---
 
 ## Story-Flow (Zusammenfassung)
-1. **Akt 0**: Charaktere werden in Sharn (Eberron) erstellt
+1. **Charaktererstellung**: Charaktere werden in Sharn (Eberron) erstellt
 2. **Akt 1**: Harpers engagieren Gruppe in Taverne → Hinterhalt → Beweise/Vertrauen sichern
 3. **Akt 2**: Einbruch in Gedankenschmiede → Kampf mit Tusk → Beweise finden, Tusk flieht
 4. **Akt 3**: Öffentliches Tribunal → Manipulation → Sturm der Anhänger → **Moralisches Dilemma** → Finale Entscheidung

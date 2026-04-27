@@ -11,21 +11,20 @@ from typing import Dict, List, Tuple, Optional, Union
 
 RASSEN = {
     "Mensch": {"boni": {"STR": 1, "DEX": 1, "CON": 1, "INT": 1, "WIS": 1, "CHA": 1}, "besonderheit": "Extra Sprache"},
-    "Elf (Hochelf)": {"boni": {"DEX": 2, "INT": 1}, "besonderheit": "Dunkelsicht, Feenblut"},
+    "Elf": {"boni": {"DEX": 2, "INT": 1}, "besonderheit": "Dunkelsicht, Feenblut"},
+    "Dunkelelf": {"boni": {"DEX": 2, "CHA": 1}, "besonderheit": "Überlegene Dunkelsicht 60ft, Feenblut"},
     "Zwerg": {"boni": {"CON": 2, "STR": 1}, "besonderheit": "Dunkelsicht, Zwergenresilienz"},
     "Halbling": {"boni": {"DEX": 2, "CHA": 1}, "besonderheit": "Glück, Behände"},
-    "Ork": {"boni": {"STR": 2, "CON": 1}, "besonderheit": "Drohende Präsenz"},
-    "Halfelf": {"boni": {"CHA": 2}, "besonderheit": "Dunkelsicht, Feenblut", "extra_bonus": 2},
+    "Halbork": {"boni": {"STR": 2, "CON": 1}, "besonderheit": "Dunkelsicht, Orksche Wut (1/Tag)"},
+    "Halbelf": {"boni": {"CHA": 2}, "besonderheit": "Dunkelsicht, Feenblut", "extra_bonus": 2},
     "Gnom": {"boni": {"INT": 2, "CON": 1}, "besonderheit": "Gnomische List"},
     "Drachenblütiger": {"boni": {"CHA": 2, "STR": 1}, "besonderheit": "Drachenatmung (1/Tag)"},
-    "Warforged": {"boni": {"CON": 2}, "besonderheit": "Konstrukt", "extra_bonus": 1},
-    "Changeling": {"boni": {"CHA": 2}, "besonderheit": "Gestaltwandler (1/Tag)", "extra_bonus": 1},
-    "Kalashtar": {"boni": {"WIS": 2, "CHA": 1}, "besonderheit": "Telepathie, Geist der Ahnen"}
+    "Tiefling": {"boni": {"CHA": 2, "INT": 1}, "besonderheit": "Höllenwiderstand, Höllenblut-Zauber"}
 }
 
 KLASSEN = {
     "Barbar": {"trefferwürfel": "d12", "primär": ["STR", "CON"], "fertigkeiten": ["Athletik", "Einschüchtern"]},
-    "Bard": {"trefferwürfel": "d8", "primär": ["CHA", "DEX"], "fertigkeiten": ["Akrobatik", "Auftritt", "Täuschen"]},
+    "Barde": {"trefferwürfel": "d8", "primär": ["CHA", "DEX"], "fertigkeiten": ["Akrobatik", "Auftritt", "Täuschen"]},
     "Druide": {"trefferwürfel": "d8", "primär": ["WIS", "CON"], "fertigkeiten": ["Naturkunde", "Überleben"]},
     "Kleriker": {"trefferwürfel": "d8", "primär": ["WIS", "STR"], "fertigkeiten": ["Heilkunde", "Religion"]},
     "Waldläufer": {"trefferwürfel": "d10", "primär": ["DEX", "WIS"], "fertigkeiten": ["Wildnis", "Überleben", "Wahrnehmung"]},
@@ -34,13 +33,12 @@ KLASSEN = {
     "Paladin": {"trefferwürfel": "d10", "primär": ["STR", "CHA"], "fertigkeiten": ["Athletik", "Einschüchtern"]},
     "Schurke": {"trefferwürfel": "d8", "primär": ["DEX", "INT"], "fertigkeiten": ["Heimlichkeit", "Fingerfertigkeit"]},
     "Zauberer": {"trefferwürfel": "d6", "primär": ["INT", "CON"], "fertigkeiten": ["Arkana", "Geschichte"]},
-    "Hexenmeister": {"trefferwürfel": "d8", "primär": ["CHA", "CON"], "fertigkeiten": ["Arkana", "Täuschen"]},
-    "Artifex": {"trefferwürfel": "d8", "primär": ["INT", "CON"], "fertigkeiten": ["Arkana", "Geschichte", "Handwerk"]}
+    "Hexenmeister": {"trefferwürfel": "d8", "primär": ["CHA", "CON"], "fertigkeiten": ["Arkana", "Täuschen"]}
 }
 
 STANDARD_AUSRUESTUNG = {
     "Barbar": ["Großes Schlachtschwert", "Handaxe", "Lederrüstung", "Abenteurerpaket"],
-    "Bard": ["Rapier", "Kurzbogen", "Lederpanzer", "Laute", "Abenteurerpaket"],
+    "Barde": ["Rapier", "Kurzbogen", "Lederpanzer", "Laute", "Abenteurerpaket"],
     "Druide": ["Keule", "Schild", "Lederrüstung", "Druidenfokus", "Abenteurerpaket"],
     "Kleriker": ["Morgenstern", "Schild", "Schupperüstung", "Heiliger Symbol", "Priesterpaket"],
     "Waldläufer": ["Langbogen", "Kurzschwert", "Lederrüstung", "Abenteurerpaket"],
@@ -49,8 +47,7 @@ STANDARD_AUSRUESTUNG = {
     "Paladin": ["Langschwert", "Schild", "Kettenhemd", "Heiliger Symbol", "Abenteurerpaket"],
     "Schurke": ["Kurzbogen", "Dolch x2", "Lederrüstung", "Diebeswerkzeuge", "Abenteurerpaket"],
     "Zauberer": ["Zauberbuch", "Dolch", "Abenteurerpaket"],
-    "Hexenmeister": ["Rapier", "Dolch", "Buch der Schatten", "Abenteurerpaket"],
-    "Artifex": ["Kriegshammer", "Handkanone", "Werkzeugsatz", "Abenteurerpaket"]
+    "Hexenmeister": ["Rapier", "Dolch", "Buch der Schatten", "Abenteurerpaket"]
 }
 
 GESINNUNGEN = [
@@ -163,12 +160,12 @@ def generiere_charakter(rasse: str, klasse: str, attribute_werte: List[int],
     attribute = {}
     
     # Sortierte Werte zuweisen (höchste Werte auf primäre Attribute)
-    sorted Werte = sorted(attribute_werte, reverse=True)
+    sorted_werte = sorted(attribute_werte, reverse=True)
     for i, attr in enumerate(ATTRIBUTE):
         if i < len(primäre) and attr in primäre:
-            attribute[attr] = sorted Werte[i]
+            attribute[attr] = sorted_werte[i]
         else:
-            attribute[attr] = sorted Werte[len(primäre) + (i - len(primäre))]
+            attribute[attr] = sorted_werte[len(primäre) + (i - len(primäre))]
     
     # Rassenboni anwenden
     attribute = wende_rassenboni(attribute, rasse, extra_bonus_attr)

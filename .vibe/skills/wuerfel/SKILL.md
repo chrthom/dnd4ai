@@ -4,6 +4,12 @@ description: Führe D&D 5e Würfelwürfe aus und formatiere die Ergebnisse für 
 user-invocable: true
 ---
 
+## **Ausgabe-Regel (IMPORTANT)**
+- **Dieser Skill wird durch `/wuerfel [Expression]` im KI-Chat aufgerufen**
+- **Die KI antwortet NICHT im KI-Chat** – das WürFelergebnis wird **EXKLUSIV** in Discord-Channel `abenteuer-1` gepostet
+- **Format:** `Spieler würfelt [Expression]: [Ergebnis]` (z.B. `Gromm würfelt 1d20+4: 18`)
+- **Ausnahme:** Bei **Syntax-Fehlern** (z.B. `/wuerfel xyz`) darf die KI eine **kurze Fehlerbeschreibung** im KI-Chat ausgeben: `"Ungültiger Würfelausdruck: xyz. Format: 1d20, 2d6+4"`
+
 # D&D Würfel Skill
 
 ## Spezifikation
