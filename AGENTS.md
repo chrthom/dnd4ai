@@ -27,8 +27,9 @@
 #### **1. Textformatierung:**
 | Text-Typ | Format | Beispiel |
 |----------|--------|----------|
-| **In-Game** (Geschichte, NPC-Dialog) | *Kursiv* oder normal | *Elrond Tusk lächelt kalt: "Die Wahrheit ist nur eine Frage der Perspektive..."* |
-| **Off-Game** (Spielanweisungen, Würfel, System) | **Fett** oder `Code` | **Gromm, du bist am Zug!** Was möchtest du tun? |
+| **In-Game** (Geschichte, NPC-Dialog) | *Kursiv*, Relevante Namen/Orte, Gegenstände, etc. zusätzlich **Fett** | ***Elrond Tusk*** *lächelt kalt: "Die Wahrheit ist nur eine Frage der Perspektive..."* |
+| **Off-Game** (Spielanweisungen, Würfel, System) | normal | Gromm, du bist am Zug! Was möchtest du tun? |
+| **Neue Orte** und **neuer Akt** | ## Überschrift | ## Akt 1: Die verfälschten Archive |
 | **Würfel-Ergebnisse** | Code-Block | `Du würfelst 1d20+5: 17` |
 | **Zusammenfassungen** | Markdown-Listen | **Zusammenfassung Akt 1:**\n- Beweise gesichert\n- 1 Wächter entkommen |
 
@@ -119,13 +120,30 @@
 
 ## Kampfmechanik
 - **Würfelwürfe**: Simuliert durch die KI (für Spieler und NPCs)
-- **Initiative**: Automatisch berechnet
-- **Schaden/Treffer**: KI berechnet automatisch
-- **Ablauf**: 
-  - KI würfelt für NPCs und Spieler
-  - Spieler entscheiden Aktionen (Angriff, Ziel, Zauber, Tränke etc.)
-  - KI führt NPC-Aktionen **automatisch aus**, bis Spieler wieder an der Reihe sind
-  - Dann Wartestatus bis Spieleraktion
+- **Initiative**: 1d20 + DEX-Modifikator, automatisch berechnet
+- **Schaden/Treffer**: KI berechnet automatisch (Treffer: Angriffswurf ≥ Gegner-AC)
+
+### **Ablauf (Rundenbasiert)**
+1. **Initiative**: KI würfelt Initiative für alle Teilnehmer, erstellt Reihenfolge
+2. **Rundenablauf**:
+   - **Phase 1 Spielerzug**: Aktiver SpielerCharakter ist am Zug. DM fragt nach Aktion
+   - **Phase 2 NPC-Zug**: KI entscheidet und führt Aktion **automatisch** aus
+3. **Kampfende prüfen**: Alle besiegt/geflüchtet/kapituliert?
+4. **Wiederholen** bis Kampf beendet
+
+### **NPC-KI-Typen** (aus `skills/kampf.json`)
+| Typ | Verhalten | Beispiel |
+|-----|-----------|----------|
+| **Aggressiv** | Greift nächsten/schwächsten Spieler an | Wächter der Narrative |
+| **Taktisch** | Nutzt Deckung, Flankenangriffe, fokussiert Zauberwirker | Elrond Tusk |
+| **Magisch** | Zauber wirken, die mehrere Ziele treffen | Meister Blufford |
+| **Flüchtend** | Fluchtversuch bei HP < 50% oder Unterzahl | Elrond Tusk (Akt 2) |
+
+### **Spezialfälle**
+- **Kritischer Treffer**: Natürliche 20 → Doppter Schaden
+- **Automatisches Fehlschlagen**: Natürliche 1 → Angriff verfehlt immer
+- **Geiselsituation** (Akt 3): Wächter mit Geisel erhalten +2 AC und Vorteil auf Angriffe
+- **Tusk-Flucht**: Bei HP < 25% oder ≥3 Treffer/Runde → Teleportationsring aktiviert
 
 ---
 
@@ -162,15 +180,20 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
   3. Nächster Akt startet per `/akt [nr]`
 
 ### **Akt-Rahmen** (pro Akt in `/akte/akt_[nr].json`):
-- **titel**: Name des Akts
-- **beschreibung**: Handlungsrahmen
-- **grenzen**: Geografische/zeitliche Begrenzung
-- **npcs**: **Schlüssel-NPCs** mit Zielen, Gesinnung, einfachen Stats (HP, AC, Angriff)
-- **schlüssel_ereignisse**: Geplante Story-Punkte (mit optionalem Bildverweis unter `/images/`)
-- **checkpoints**: **Wichtige Entscheidungen**, die Spieler treffen müssen
-- **fallenzahl**: Maximal 2 Rätsel/Fallen pro Akt
-- **abschlussbedingung**: Klare Bedingung für Akt-Ende
-- **bilder**: Verweise auf Bilder in `/images/` für Schlüsselereignisse
+Jeder Akt enthält folgende strukturierte Felder:
+
+| Feld | Typ | Beispiel (aus akt_2.json) | Beschreibung |
+|------|-----|-----------------------------|--------------|
+| **titel** | string | `"Akt 2: Die Gedankenschmiede"` | Name des Akts |
+| **beschreibung** | string | `"Die Gruppe dringt in Elrond Tusks geheime..."` | Handlungsrahmen |
+| **grenzen** | object | `{"ort": "Tavick’s Landing", "zeitlimit": "Bis Sonnenaufgang"}` | Geografisch/zeitlich |
+| **npcs** | array | `[{"name": "Elrond Tusk", "gesinnung": "CE", "stats": {"HP": 50, "AC": 16}}]` | Schlüssel-NPCs mit Stats |
+| **schlüssel_ereignisse** | array | `[{"titel": "Begegnung mit Elrond Tusk", "beschreibung": "...", "bild": "/images/tusk_begegnung.jpg"}]` | Story-Punkte |
+| **checkpoints** | array | `[{"beschreibung": "Welchen Weg wählt die Gruppe?", "entscheidung": "Eingangsweg", "optionen": [...]}` | Wichtige Entscheidungen |
+| **fallenzahl** | integer | `2` | Maximal 2 Fallen pro Akt |
+| **fallen** | array | `[{"name": "Giftpfeil-Falle", "typ": "Klassisch (mechanisch)", "auswirkung": "Dex DC 13..."}]` | Fallen-Details |
+| **abschlussbedingung** | string | `"Die Gruppe findet Beweise gegen Tusk und dieser flieht..."` | Ende-Kriterium |
+| **bilder** | array | `["/images/gedankenschmiede_eingang.jpg"]` | Bildverweise |
 
 - **Dynamik**: KI spinnt Rahmen innerhalb der Vorgaben weiter; **weitere NPCs können zur Laufzeit erstellt werden**
 - **Persistenz**: Zusammenfassung pro Akt in `/decisions/akt_[nr]_zusammenfassung.json`
@@ -208,24 +231,42 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
 - **Verbotene Archive** (Zensierte/Gelöschte Daten)
 - **Klassische Fallen**: Giftpfeile, Gruben, mechanische Sperren
 
+### **Schlüssel-NPCs**
+*(Details in den jeweiligen Akt-JSON-Dateien: `/akte/akt_[1-3].json`)*
+
+| Name | Akt | Rolle |
+|------|-----|-------|
+| Meister Quill | 1 | Harper-Agent |
+| Schwester Scribble | 1 | Harper-Archivarin |
+| Wächter der Narrative | 1, 3 | Tusks Handlanger |
+| Anführer der Wächter | 1 | Charm-Magier |
+| **Elrond Tusk** | **2, 3** | **Hauptantagonist** |
+| Warforged-Wache | 2 | Mechanischer Wächter |
+| Gefangener Harper-Agent | 2 | Informant |
+| Alchemist-Lehrling | 2 | Tusks Gehilfe |
+| Lady Justice | 3 | Richterin |
+| Meister Blufford | 3 | Tusks Anwalt |
+| Harper-Verbündeter | 3 | Unterstützer |
+| Bürger von Sharn | 3 | Geschworener |
+
 ---
 
 ## Entscheidungsbäume & Auswirkungen
 
 ### **Akt 1: "Die verfälschten Archive"**
-| Entscheidung | Erfolg | Misserfolg |
-|--------------|--------|------------|
-| **Flüchten** (Dex/Stealth) | 1 Wächter verfolgt | 2 Wächter + Alarm in der Stadt |
-| **Kämpfen** | Beweisstücke + Harpers vertrauen | Harpers misstrauisch (Nachteil bei Hilfe) |
-| **Verhandeln** (Cha/Bluff) | Wächter lassen Gruppe passieren | Wächter warnen Tusk (er ist vorbereitet) |
+| Entscheidung | DC | Erfolg | Misserfolg |
+|--------------|----|--------|------------|
+| **Flüchten** (Dex/Stealth) | 14 | 1 Wächter verfolgt | 2 Wächter + Alarm in der Stadt |
+| **Kämpfen** | - | Beweisstücke + Harpers vertrauen | Harpers misstrauisch (Nachteil bei Hilfe) |
+| **Verhandeln** (Cha/Bluff) | 15 | Wächter lassen Gruppe passieren | Wächter warnen Tusk (er ist vorbereitet) |
 
 ### **Akt 2: "Die Gedankenschmiede"**
-| Entscheidung | Erfolg | Misserfolg |
-|--------------|--------|------------|
-| **Haupteingang** (Täuschung) | Umgehen Wachen | Kampf mit 2 Warforged-Wachen |
-| **Lüftungsschächte** (Dex) | Schnell, aber eng | Zeit verlieren, Tusk flieht früher |
-| **Geheimgang** (Wis/Perzeption) | Finde versteckten Eingang | Auslösen klassischer Falle (Giftpfeile/Grube) |
-| **Gefangenen befragen** (Int/Insight) | Wertvolle Info über Tusks Pläne | Falschinformation (Tusk hat ihn manipuliert) |
+| Entscheidung | DC | Erfolg | Misserfolg |
+|--------------|----|--------|------------|
+| **Haupteingang** (Täuschung) | 15 | Umgehen Wachen | Kampf mit 2 Warforged-Wachen |
+| **Lüftungsschächte** (Dex) | 13 | Schnell, aber eng | Zeit verlieren, Tusk flieht früher |
+| **Geheimgang** (Wis/Perzeption) | 14 | Finde versteckten Eingang | Auslösen klassischer Falle (Giftpfeile/Grube) |
+| **Gefangenen befragen** (Int/Insight) | 12 | Wertvolle Info über Tusks Pläne | Falschinformation (Tusk hat ihn manipuliert) |
 
 **Auswirkungen auf Akt 3:**
 - Beweise gesichert (Akt 1) → **+2 Beweismittel** im Tribunal

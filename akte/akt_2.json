@@ -8,69 +8,69 @@
   "npcs": [
     {
       "name": "Elrond Tusk",
-      "beschreibung": "Charismatischer Mann Mitte 40 mit wildem Haar und einem Sturmherrufer-Stab. Traegt einen Umhang mit eingestickten Schaltkreisen (Runen). Spricht in Raetseln und ueberzeugt mit fast hypnotischer Stimme. Besitzt den Echo-Kristall und das Himmelsnetz-Artefakt.",
-      "gesinnung": "CE (Chaotisch Boese)",
+      "beschreibung": "Charismatischer Mann Mitte 40 mit wildem Haar und einem Sturmherrufer-Stab. Trägt einen Umhang mit eingestickten Schaltkreisen (Runen). Spricht in Rätseln und überzeugt mit fast hypnotischer Stimme. besitzt den Echo-Kristall und das Himmelsnetz-Artefakt.",
+      "gesinnung": "CE (Chaotisch Böse)",
       "ziele": ["Sharns Narrativ kontrollieren", "Die Harpers diskreditieren", "Seine Macht ausbauen"],
       "stats": {"HP": 50, "AC": 16, "angriff": "+7 (Sturmherrufer-Stab, 2d8 Blitz oder Echo-Kristall-Verstaerkung, 1d10 Psychisch)"}
     },
     {
       "name": "Warforged-Wache",
-      "beschreibung": "Mechanische Waechter mit leuchtenden blauen Augen, programmiert, um Eindringlinge zu eliminieren.",
+      "beschreibung": "Mechanische Wächter mit leuchtenden blauen Augen, programmiert, um Eindringlinge zu eliminieren.",
       "gesinnung": "N (Neutral)",
-      "ziele": ["Die Gedankenschmiede beschuetzen"],
+      "ziele": ["Die Gedankenschmiede beschützen"],
       "stats": {"HP": 35, "AC": 18, "angriff": "+5 (Stahlfaust, 1d10+3)"}
     },
     {
       "name": "Gefangener Harper-Agent",
-      "beschreibung": "Verwunderter, aber entschlossener Mann Mitte 30. Hat Informationen ueber Tusks Plaene, aber wurde moeglicherweise manipuliert.",
+      "beschreibung": "Verwunderter, aber entschlossener Mann Mitte 30. Hat Informationen über Tusks Pläne, aber wurde möglicherweise manipuliert.",
       "gesinnung": "NG (Neutral Gut)",
-      "ziele": ["Die Gruppe warnen", "Tusks Plaene aufdecken"],
+      "ziele": ["Die Gruppe warnen", "Tusks Pläne aufdecken"],
       "stats": {"HP": 12, "AC": 12, "angriff": "-"}
     },
     {
       "name": "Alchemist-Lehrling",
-      "beschreibung": "Junger, nervoeser Mensch, der fuer Tusk arbeitet. Weiss nicht, was wirklich in der Schmiede passiert.",
+      "beschreibung": "Junger, nervöser Mensch, der für Tusk arbeitet. Weiß nicht, was wirklich in der Schmiede passiert.",
       "gesinnung": "CN (Chaotisch Neutral)",
-      "ziele": ["Ueberleben", "Seinen Meister nicht enttaeuschen"],
+      "ziele": ["Überleben", "Seinen Meister nicht enttäuschen"],
       "stats": {"HP": 10, "AC": 11, "angriff": "+2 (Alchemisten-Flasche, 1d6 Sauer)"}
     }
   ],
   "schlüssel_ereignisse": [
     {
       "titel": "Ankunft an der Gedankenschmiede",
-      "beschreibung": "Die Gruppe findet den versteckten Eingang zur Werkstatt unter der 'Bank von Tavick'. Drei Wege fuehren hinein: Haupteingang (bewacht), Luetzungsschaechte (eng), Geheimgang (versteckt).",
+      "beschreibung": "Die Gruppe findet den versteckten Eingang zur Werkstatt unter der 'Bank von Tavick'. Drei Wege führen hinein: Haupteingang (bewacht), Lüftungsschächte (eng), Geheimgang (versteckt).",
       "bild": "/images/gedankenschmiede_eingang.jpg"
     },
     {
       "titel": "Erforschung der Schmiede",
-      "beschreibung": "In der Werkstatt finden sich Alchemielabor mit kochenden Essenzen, Schreibpulte mit halbfertigen 'Geschichten', ein Gefangener Harper-Agent in einer Zelle, und Tusks Notizen ueber das 'Himmelsnetz'-Projekt.",
+      "beschreibung": "In der Werkstatt finden sich Alchemielabor mit kochenden Essenzen, Schreibpulte mit halbfertigen 'Geschichten', ein Gefangener Harper-Agent in einer Zelle, und Tusks Notizen über das 'Himmelsnetz'-Projekt.",
       "bild": "/images/gedankenschmiede_innen.jpg"
     },
     {
       "titel": "Begegnung mit Elrond Tusk",
-      "beschreibung": "Tusk kehrt frueher als erwartet zurueck! Er ist ueberrascht, die Gruppe zu sehen. Kurzer Kampf – wenn Tusk zu viel Schaden nimmt, aktiviert er seinen Teleportationsring und flieht. Er hinterlaesst den Echo-Kristall.",
+      "beschreibung": "Tusk kehrt früher als erwartet zurück! Er ist überrascht, die Gruppe zu sehen. Kurzer Kampf – wenn Tusk zu viel Schaden nimmt, aktiviert er seinen Teleportationsring und flieht. Er hinterlässt den Echo-Kristall.",
       "bild": "/images/tusk_begegnung.jpg"
     }
   ],
   "checkpoints": [
     {
-      "beschreibung": "Welchen Weg waehlt die Gruppe, um einzudringen?",
+      "beschreibung": "Welchen Weg wählt die Gruppe, um einzudringen?",
       "entscheidung": "Eingangsweg",
       "optionen": [
         {
-          "name": "Haupteingang (Taeuschung DC 15)",
-          "erfolg": "Die Gruppe ueberredet die Warforged-Wachen, sie durchzulassen (z.B. als Inspekteure getarnt).",
-          "misserfolg": "Kampf mit 2 Warforged-Wachen (vermeidbar durch Fluechten oder Verhandeln)."
+          "name": "Haupteingang (Täuschung DC 15)",
+          "erfolg": "Die Gruppe überredet die Warforged-Wachen, sie durchzulassen (z.B. als Inspekteure getarnt).",
+          "misserfolg": "Kampf mit 2 Warforged-Wachen (vermeidbar durch Flüchten oder Verhandeln)."
         },
         {
-          "name": "Luetzungsschaechte (Dex DC 13)",
+          "name": "Lüftungsschächte (Dex DC 13)",
           "erfolg": "Schnell, aber eng. Gruppe kommt unentdeckt rein.",
-          "misserfolg": "Zeit verlieren (1 Stunde). Tusk kehrt frueher zurueck und ist besser vorbereitet."
+          "misserfolg": "Zeit verlieren (1 Stunde). Tusk kehrt früher zurück und ist besser vorbereitet."
         },
         {
-          "name": "Geheimgang (Wis Perzeption DC 14)",
+          "name": "Geheimgang (Wis Wahrnehmung DC 14)",
           "erfolg": "Finde versteckten Eingang durch alte Abwasserrohre.",
-          "misserfolg": "Loest klassische Falle aus (Giftpfeile: Dex DC 13 oder 1d6 Gift)."
+          "misserfolg": "Löst klassische Falle aus (Giftpfeile: Dex DC 13 oder 1d6 Gift)."
         }
       ]
     },
@@ -80,7 +80,7 @@
       "optionen": [
         {
           "name": "Befragen (Int/Insight DC 12)",
-          "erfolg": "Er verbessert wertvolle Info: Tusk plant, den Echo-Kristall im Tribunal einzusetzen. Sichtweise: Kennt Tusks Schwaeche (Vorteil im finalen Kampf).",
+          "erfolg": "Er liefert wertvolle Info: Tusk plant, den Echo-Kristall im Tribunal einzusetzen. Sichtweise: Kennt Tusks Schwäche (Vorteil im finalen Kampf).",
           "misserfolg": "Falschinformation: Tusk hat ihn manipuliert. Er gibt falsche Hinweise."
         },
         {
@@ -96,14 +96,14 @@
     {
       "name": "Giftpfeil-Falle",
       "typ": "Klassisch (mechanisch)",
-      "beschreibung": "Versteckte Bogenmechanismen an der Decke. Ausloeser: Druckplatte am Boden.",
+      "beschreibung": "Versteckte Bogenmechanismen an der Decke. Auslöser: Druckplatte am Boden.",
       "auswirkung": "Dex DC 13 zum Ausweichen oder 1d6 Gift-Schaden und 1 Runde benachteiligt."
     },
     {
       "name": "Halluzinations-Spiegel",
       "typ": "Magisch",
-      "beschreibung": "Ein Spiegel in der Schmiede, der jedem Betrachter eine andere Realitaet zeigt (z.B. eigene Tod, Geliebte in Gefahr).",
-      "auswirkung": "Weisheit DC 14 oder 1 Runde verwirrt (greift Verbuendete an)."
+      "beschreibung": "Ein Spiegel in der Schmiede, der jedem Betrachter eine andere Realität zeigt (z.B. eigener Tod, Geliebte in Gefahr).",
+      "auswirkung": "Weisheit DC 14 oder 1 Runde verwirrt (greift Verbündete an)."
     }
   ],
   "abschlussbedingung": "Die Gruppe findet Beweise gegen Tusk und dieser flieht nach kurzem Kampf.",

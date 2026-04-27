@@ -9,7 +9,7 @@
   "schlüssel_ereignisse": [
     {
       "titel": "Rassenauswahl",
-      "beschreibung": "Spieler wählen ihre Rasse (z.B. Mensch, Elf, Zwerg, Halbling, Orkl, etc.). Die KI erklärt Vor- und Nachteile.",
+      "beschreibung": "Spieler wählen ihre Rasse (z.B. Mensch, Elf, Zwerg, Halbling, Halbork, etc.). Die KI erklärt Vor- und Nachteile.",
       "bild": null
     },
     {

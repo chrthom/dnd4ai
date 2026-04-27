@@ -76,7 +76,7 @@
           "beschreibung": "Charakter weicht allen Angriffe in dieser Runde aus (DEX-Rettungswurf DC 15 für jeden Angriff)."
         }
       ],
-      "fragen": "Was moechtest du tun? (Angreifen/Zauber/Fähigkeit/Bewegung/Gegenstand/Verteidigen/Ausweichen/Flüchten)"
+      "fragen": "Was möchtest du tun? (Angreifen/Zauber/Fähigkeit/Bewegung/Gegenstand/Verteidigen/Ausweichen/Flüchten)"
     },
     "phase_2_npc": {
       "beschreibung": "NPC ist am Zug. KI entscheidet Aktion basierend auf NPC-Typ und Situation.",
@@ -103,18 +103,18 @@
   },
   "npc_ki-logik": {
     "aggressiv": {
-      "beschreibung": "Greift immer den naechsten/schwächsten Spieler an",
+      "beschreibung": "Greift immer den nächsten/schwächsten Spieler an",
       "beispiel": "Wächter der Narrative"
     },
     "taktisch": {
-      "beschreibung": "Nutzt Deckung, Flankenangriffe, oder fokussiert den stärksten Zauberwirker",
+      "beschreibung": "Nutzt Deckung, Flankenangriffe oder fokussiert den stärksten Zauberwirker",
       "beispiel": "Elrond Tusk (nutzt Echo-Kristall für Verbesserung)"
     },
     "magisch": {
       "beschreibung": "Nutzt Zauber oder Fähigkeiten, die mehrere Ziele treffen",
       "beispiel": "Meister Blufford (Charm Person, Suggestion)"
     },
-    "fluechtend": {
+    "flüchtend": {
       "beschreibung": "Versucht zu fliehen, wenn HP < 50% oder wenn überzahlt",
       "beispiel": "Elrond Tusk in Akt 2 (flieht, wenn zu viel Schaden)"
     }
@@ -144,18 +144,18 @@
       "flucht": "[Gegner/NPC] flieht aus dem Kampf!"
     }
   },
-  "spezialfaelle": {
+  "spezialfälle": {
     "tusk_flucht": {
-      "ausloeser": "Tusks HP < 25% oder wenn er mehr als 3 Treffer in einer Runde erhält",
+      "Auslöser": "Tusks HP < 25% oder wenn er mehr als 3 Treffer in einer Runde erhält",
       "aktion": "Aktiviert Teleportationsring und flieht",
       "folgen": "Hinterlässt Echo-Kristall, Kampf endet"
     },
     "geisel_situation": {
-      "ausloeser": "Wächter hält Geisel (Akt 3)",
+      "Auslöser": "Wächter hält Geisel (Akt 3)",
       "regeln": "Wächter mit Geisel hat +2 AC und Vorteil auf Angriffe. Bei Tod des Wächters: Geisel wird freigelassen (oder stirbt, falls kritischer Treffer)."
     },
     "moralisches_dilemma": {
-      "ausloeser": "Geiselnahme in Akt 3",
+      "Auslöser": "Geiselnahme in Akt 3",
       "entscheidung": "Spieler müssen wählen: Geisel retten oder Tusk angreifen",
       "konsequenzen": "Siehe Akt 3 Konzept"
     }
@@ -166,10 +166,10 @@
       "ablauf": [
         "KI: Initiative: Lyssa (21), Gromm (18), Wächter 1 (15), Thalion (12), Wächter 2 (8)",
         "KI: --- Runde 1 ---",
-        "KI: Lyssa ist am Zug (18/18 HP). Was moechtest du tun?",
+        "KI: Lyssa ist am Zug (18/18 HP). Was möchtest du tun?",
         "Spieler: Angreifen Wächter 1",
         "KI: Lyssa wirft 1d20+5: 19 (trifft AC 15). Schaden: 1d8+3 = 11. Wächter 1: 11/22 HP.",
-        "KI: Gromm ist am Zug (20/20 HP). Was moechtest du tun?",
+        "KI: Gromm ist am Zug (20/20 HP). Was möchtest du tun?",
         "Spieler: Angreifen Wächter 1",
         "KI: Gromm wirft 1d20+5: 25 (kritisch!). Schaden: 2d8+3 = 14. Wächter 1: -3/22 HP (besiegt).",
         "KI: Wächter 1 ist besiegt!",

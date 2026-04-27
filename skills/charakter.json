@@ -2,7 +2,7 @@
   "name": "charakter",
   "typ": "Slash-Kommando/Skill",
   "kommando": "/charakter erstellen",
-  "beschreibung": "Interaktive Charaktererstellung für D&D 5e in der Welt Eberron. Führt Spieler durch Rasse, Klasse, Attribute (4d6 Methode), Fertigkeiten und Ausrüstung. Kann als Akt 0 (/akt 0) oder separat aufgerufen werden.",
+  "beschreibung": "Interaktive Charaktererstellung für D&D 5e. Führt Spieler durch Rasse, Klasse, Attribute (4d6 Methode), Fertigkeiten und Ausrüstung. Kann als Akt 0 (/akt 0) oder separat aufgerufen werden.",
   "parameter": {
     "interaktiv": {
       "typ": "boolean",
@@ -13,22 +13,21 @@
   "schritte": [
     {
       "name": "Rassenauswahl",
-      "beschreibung": "Spieler wählt eine Rasse aus Eberron. Jede Rasse hat spezielle Attribute-Boni und Fähigkeiten.",
+      "beschreibung": "Spieler wählt eine Rasse. Jede Rasse hat spezielle Attribute-Boni und Fähigkeiten.",
       "optionen": [
         {"name": "Mensch", "boni": "+1 auf alle Attribute", "besonderheit": "Extra Sprache"},
         {"name": "Elf", "boni": "+2 DEX, +1 INT", "besonderheit": "Dunkelsicht, Feenblut"},
+        {"name": "Dunkelelf", "boni": "+2 DEX, +1 CHA", "besonderheit": "Überlegene Dunkelsicht 60ft, Feenblut"},
         {"name": "Zwerg", "boni": "+2 CON, +1 STR", "besonderheit": "Dunkelsicht, Zwergenresilienz"},
         {"name": "Halbling", "boni": "+2 DEX, +1 CHA", "besonderheit": "Glück, Behände"},
-        {"name": "Ork", "boni": "+2 STR, +1 CON", "besonderheit": "Drohende Präsenz"},
+        {"name": "Halbork", "boni": "+2 STR, +1 CON", "besonderheit": "Dunkelsicht, Orksche Wut (1/Tag)"},
         {"name": "Halbelf", "boni": "+2 CHA, +1 auf zwei Attribute", "besonderheit": "Dunkelsicht, Feenblut"},
         {"name": "Gnom", "boni": "+2 INT, +1 CON", "besonderheit": "Gnomische List"},
-        {"name": "Drachenblütiger", "boni": "+2 CHA, +1 STR", "besonderheit": "Drachenatmung (1/Tag)"},
-        {"name": "Warforged", "boni": "+2 CON, +1 auf ein Attribute", "besonderheit": "Konstrukt (kein Essen/Schlafen nötig, Immun gegen einige Effekte)"},
-        {"name": "Changeling", "boni": "+2 CHA, +1 auf ein Attribute", "besonderheit": "Gestaltwandler (1/Tag, 1 Stunde, bekannte Person)"},
-        {"name": "Kalashtar", "boni": "+2 WIS, +1 CHA", "besonderheit": "Telepathie, Geist der Ahnen"}
+        {"name": "Drachenblütiger", "boni": "+2 STR, +1 CHA", "besonderheit": "Drachenatmung (1/Tag)"},
+        {"name": "Tiefling", "boni": "+2 CHA, +1 INT", "besonderheit": "Höllenwiderstand, Höllenblut-Zauber"}
       ],
       "fragen": [
-        "Welche Rasse moechtest du spielen? (1-10 oder Name)"
+        "Welche Rasse möchtest du spielen? (1-10 oder Name)"
       ]
     },
     {
@@ -45,11 +44,10 @@
         {"name": "Paladin", "trefferwürfel": "d10", "primär": ["STR", "CHA"], "besonderheit": "Göttlicher Sinn, Heilige Aufforderung"},
         {"name": "Schurke", "trefferwürfel": "d8", "primär": ["DEX", "INT"], "besonderheit": "Heimlichkeit, Hinterhalt"},
         {"name": "Zauberer", "trefferwürfel": "d6", "primär": ["INT", "CON"], "besonderheit": "Arkanes Wissen, Zaubersprüche"},
-        {"name": "Hexenmeister", "trefferwürfel": "d8", "primär": ["CHA", "CON"], "besonderheit": "Paktmagie, Eldritch Invocations"},
-        {"name": "Artifex", "trefferwürfel": "d8", "primär": ["INT", "CON"], "besonderheit": "Magische Erfindungen, Infusionen"}
+        {"name": "Hexenmeister", "trefferwürfel": "d8", "primär": ["CHA", "CON"], "besonderheit": "Paktmagie, Eldritch Invocations"}
       ],
       "fragen": [
-        "Welche Klasse moechtest du spielen? (1-12 oder Name)"
+        "Welche Klasse möchtest du spielen? (1-11 oder Name)"
       ]
     },
     {
@@ -125,7 +123,7 @@
   "beispiel_ablauf": {
     "eingabe": "/charakter erstellen",
     "dialog": [
-      "KI: Willkommen zur Charaktererstellung! Welche Rasse möchtest du spielen? (Mensch, Elf, Zwerg, Halbling, Ork, ...)",
+      "KI: Willkommen zur Charaktererstellung! Welche Rasse möchtest du spielen? (Mensch, Elf, Dunkelelf, Zwerg, Halbling, Halbork, ...)",
       "Spieler: Zwerg",
       "KI: Gute Wahl! Zwerge erhalten +2 CON und +1 STR. Welche Klasse? (Barbar, Kämpfer, Kleriker, ...)",
       "Spieler: Kämpfer",
@@ -141,11 +139,5 @@
   "fehlerbehandlung": {
     "ungueltige_auswahl": "'Ungültige Auswahl. Bitte wähle aus den verfügbaren Optionen.'",
     "abbruch": "'/charakter abbrechen' zum Beenden der Erstellung."
-  },
-  "eberron_spezifisch": {
-    "rassen": ["Warforged", "Changeling", "Kalashtar"],
-    "klassen": ["Artifex"],
-    "ausruestung": ["Drakonische Waffen", "Elementargebundene Items"],
-    "hinweis": "In Eberron gibt es zusätzliche magische Items, die als Startausrüstung gewählt werden können (z.B. 'Elementarstein' für kleine Magie-Effekte)."
   }
 }
