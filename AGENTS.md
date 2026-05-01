@@ -101,7 +101,7 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
 
 ## Entscheidungs-Persistenz
 - **Format**: Makdown
-- **Speicherort**: temp/zusammenfassung_kapitel<nr>.md
+- **Speicherort**: temp/zusammenfassung/kapitel<nr>.md
 - **Inhalt**: Wichtige Entscheidungen und Kapitel-Zusammenfassung
 
 ---

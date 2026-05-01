@@ -6,5 +6,5 @@ Dort wo in abenteuer/details/kapitel_1.json zu einem Ereignis ein Bild-Pfad ange
 Spinne eine eigene kleine Geschichte für jeden Punkt unter "schlüssel_ereignisse".
 Wenn der letzte Checkpoint des Kapitels erreicht wurde:
 - überschreibe temp/status.txt und trage "4_gedankenschmiede" ein
-- fasse die Handlung und wichtigsten Entscheidungen/Checkpoints zusammen und speichere sie unter temp/zusammenfassung_kapitel1.md
+- fasse die Handlung und wichtigsten Entscheidungen/Checkpoints zusammen und speichere sie unter temp/zusammenfassung/kapitel1.md
 - fahre mit den Anweisungen in abenteuer/4_gedankenschmiede.md fort
