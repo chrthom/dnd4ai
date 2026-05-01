@@ -35,7 +35,7 @@
 | **Zusammenfassungen** | Markdown-Listen | **Zusammenfassung Kapitel 1:**\n- Beweise gesichert\n- 1 Wächter entkommen |
 
 #### **2. Spieleraufruf:**
-- **Nächster Spieler** wird **namentlich angesprochen** (Beispiel: *"Der Wächter greift an!* **Lyssa** - *du bist als Nächste dran! Was tust du?"*)
+- Die Spieler werden mit ihren Charakternamen bzw. Discord Anzeigename (user.global_name oder member.nick) angesprochen - Beispiel: *"Der Wächter greift an!* **Lyssa** - *du bist als Nächste dran! Was tust du?"*
 - **Gruppenaufruf**: "**Was tut die Gruppe?**" (wenn alle antworten sollen)
 - **Offener Aufruf**: "**Wer möchte handeln?**" (wenn frei wählbar)
 
