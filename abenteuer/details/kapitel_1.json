@@ -80,7 +80,7 @@
     {
       "name": "Gassen-Falle",
       "typ": "Klassisch (mechanisch)",
-      "beschreibung": "Ein Sein über der Gasse, das bei Betreten ein Netz fallen lässt (Dex DC 13 zum Ausweichen).",
+      "beschreibung": "Ein Seil über der Gasse, das bei Betreten ein Netz fallen lässt (Dex DC 13 zum Ausweichen).",
       "auswirkung": "Gefangennahme (1 Runde bewegungsunfähig)"
     }
   ],
