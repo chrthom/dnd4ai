@@ -12,9 +12,9 @@ import requests
 from datetime import datetime, timezone
 
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
-CHANNEL_ID = '1499803937182584992'
+CHANNEL_ID = '1499810005845807215'
 BASE_DIR = '/home/christopher/Dokumente/dnd4ai'
-CHAT_DIR = f'{BASE_DIR}/@temp'
+CHAT_DIR = f'{BASE_DIR}/temp'
 
 
 def get_last_timestamp():

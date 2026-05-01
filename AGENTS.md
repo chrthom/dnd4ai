@@ -81,7 +81,7 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
 ## Charakterbögen
 - **Format**: Markdown
 - **Kommunikation**: Editierbare, gepinnte Posts im Discord-Channel
-- **Lokaler Speicherort**: @temp/charakterbogen/
+- **Lokaler Speicherort**: temp/charakterbogen/
 - **Struktur für Spieler**:
   ```markdown
   **Name:** Gromm Eisenfaust
@@ -101,7 +101,7 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
 
 ## Entscheidungs-Persistenz
 - **Format**: Makdown
-- **Speicherort**: @temp/zusammenfassung_kapitel<nr>.md
+- **Speicherort**: temp/zusammenfassung_kapitel<nr>.md
 - **Inhalt**: Wichtige Entscheidungen und Kapitel-Zusammenfassung
 
 ---
@@ -144,9 +144,6 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
   4. **Kapitel 2**: Einbruch in Gedankenschmiede → Kampf mit Tusk → Beweise finden, Tusk flieht
   5. **Kapitel 3**: Öffentliches Tribunal → Manipulation → Sturm der Anhänger → **Moralisches Dilemma** → Finale Entscheidung
 - **Thema**: Krieg der Narrative, Manipulation der Wahrheit (Metapher für KI/SoMo)
-- **Ablauf**:
-  1. Kapitel wird interaktiv bis zum Ziel durchgespielt
-  2. **Automatische Zusammenfassung** der wichtigsten Entscheidungen im Channel und in @temp/status.json 
 
 ---
 
