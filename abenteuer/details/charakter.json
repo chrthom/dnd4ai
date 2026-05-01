@@ -2,7 +2,7 @@
   "schritte": [
     {
       "name": "Name",
-      "beschreibung": "Der Name des Charakters ist gleich dem Anzeigename des Discord-Nutzers"
+      "beschreibung": "Der Name des Charakters ist gleich dem Anzeigename des Discord-Nutzers (user.global_name oder member.nick)"
     },
     {
       "name": "Rassenauswahl",
