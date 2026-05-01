@@ -1,7 +1,7 @@
 ---
 name: wuerfel
 description: Führe D&D 5e Würfelwürfe aus und formatiere die Ergebnisse für den Discord-Chat
-user-invocable: true
+user-invocable: false
 ---
 
 ## **Ausgabe-Regel (IMPORTANT)**

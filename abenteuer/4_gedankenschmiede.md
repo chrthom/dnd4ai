@@ -1,0 +1,1 @@
+Beende die Ausführung sofort! Unternehme nichts mehr!

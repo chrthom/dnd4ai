@@ -1,0 +1,89 @@
+{
+  "titel": "Akt 1: Die verfälschten Archive",
+  "beschreibung": "Die Gruppe wird von den Harpers in der Taverne 'Zum fließenden Tintenfass' engagiert, um herauszufinden, wer die Chroniken von Eberron manipuliert. Auf dem Rückweg zum Harper-Stützpunkt werden sie von den Wächtern der Narrative überfallen.",
+  "grenzen": {
+    "ort": "Sharn, Distrikt Morgrave (Taverne 'Zum fließenden Tintenfass' und umliegende Gassen)",
+    "zeitlimit": "Eine Nacht"
+  },
+  "npcs": [
+    {
+      "name": "Meister Quill",
+      "beschreibung": "Älterer Harper-Agent mit strenger Miene und einer Feder als Haarspange. Trägt einen Umhang mit Harper-Symbol. Spricht leise, aber mit Autorität.",
+      "gesinnung": "Neutral Gut",
+      "ziele": ["Die Wahrheit über die Manipulationen herausfinden", "Elrond Tusk stoppen"],
+      "stats": {"HP": 20, "AC": 14, "angriff": "+2 (Dolch, 1d4)"}
+    },
+    {
+      "name": "Schwester Scribble",
+      "beschreibung": "Junge Harper-Archivarin mit Tintenflecken auf den Händen. Enthusiastisch, aber etwas schüchtern. Kennt jedes Detail der Chroniken.",
+      "gesinnung": "Chaotisch Gut",
+      "ziele": ["Die echten Archive beschützen", "Beweise für die Manipulation sammeln"],
+      "stats": {"HP": 14, "AC": 12, "angriff": "+1 (Zauberstab, 1d6)"}
+    },
+    {
+      "name": "Wächter der Narrative (Standard)",
+      "beschreibung": "Doppelgänger in Harper-Uniform getarnt. Kalt, berechnend. Nutzt Illusionen, um Verwirrung zu stiften.",
+      "gesinnung": "Rechtschaffend Böse",
+      "ziele": ["Die Gruppe aufhalten oder eliminieren", "Beweise für Tusks Manipulationen zerstören"],
+      "stats": {"HP": 10, "AC": 15, "angriff": "+4 (Kurzschwert, 1d6+2 oder Täuschung)"}
+    },
+    {
+      "name": "Anführer der Wächter",
+      "beschreibung": "Menschlicher Charm-Magier mit versteinertem Blick. Trägt einen Echo-Kristall-Fragment als Amulett.",
+      "gesinnung": "Neutral Böse",
+      "ziele": ["Die Gruppe fangen oder töten", "Tusk über die Gruppe informieren"],
+      "stats": {"HP": 18, "AC": 13, "angriff": "+5 (Charm-Pfeil, 2d6 Psychisch oder Kurzschwert, 1d8+2)"}
+    }
+  ],
+  "schlüssel_ereignisse": [
+    {
+      "titel": "Auftragsvergabe in der Taverne",
+      "beschreibung": "Meister Quill und Schwester Scribble treffen die Gruppe in der Taverne 'Zum fließenden Tintenfass'. Sie zeigen ein verfälschtes Dokument: Eine Seite der Chroniken von Eberron, die behauptet, König Boranel sei nie ermordet worden – obwohl alle wissen, dass er es war. Die Harpers brauchen Hilfe, um den Verantwortlichen zu finden.",
+      "bild": "/bilder/taverne_auftrag.jpg"
+    },
+    {
+      "titel": "Erste Spuren verfolgen",
+      "beschreibung": "Die Gruppe findet Hinweise auf manipulierte Archive in einem Harper-Depot. Auf dem Weg dorthin bemerken sie, dass sie verfolgt werden.",
+      "bild": null
+    },
+    {
+      "titel": "Hinterhalt in den Gassen",
+      "beschreibung": "Die Gruppe wird von 2-3 Wächtern der Narrative in einer dunklen Gasse angegriffen. Einer von ihnen trägt ein Harper-Abzeichen – ein Doppelgänger!",
+      "bild": "/bilder/hinterhalt_gasse.jpg"
+    }
+  ],
+  "checkpoints": [
+    {
+      "beschreibung": "Wie reagiert die Gruppe auf den Hinterhalt?",
+      "entscheidung": "Flüchten, Kämpfen oder Verhandeln",
+      "optionen": [
+        {
+          "name": "Flüchten (Dex/Stealth DC 14)",
+          "erfolg": "Die Gruppe entkommt mit 1 verlangsamten Wächter. Vorteil: Kein Kampf, aber Wächter warnt andere.",
+          "misserfolg": "2 Wächter verfolgen die Gruppe. Alarm wird in der Stadt ausgelöst – mehr Wachen in Akt 2."
+        },
+        {
+          "name": "Kämpfen",
+          "erfolg": "Die Gruppe besiegt die Wächter und findet Beweisstücke (verfälschte Dokumente, Hinweise auf Tusk). Harpers vertrauen der Gruppe (+2 auf Social-Checks mit Harpers in Akt 2/3).",
+          "misserfolg": "Die Gruppe besiegt die Wächter, aber ohne Beweise. Harpers sind misstrauisch (Nachteil auf Hilfe in Akt 2)."
+        },
+        {
+          "name": "Verhandeln (Cha/Bluff DC 15)",
+          "erfolg": "Die Wächter glauben, die Gruppe sei Teil von Tusks Plan. Sie lassen die Gruppe passieren – aber warnen Tusk (er ist auf sie vorbereitet in Akt 2).",
+          "misserfolg": "Die Wächter erkennen den Betrug. Kampf bricht aus wie bei 'Kämpfen/Misserfolg'."
+        }
+      ]
+    }
+  ],
+  "fallenzahl": 1,
+  "fallen": [
+    {
+      "name": "Gassen-Falle",
+      "typ": "Klassisch (mechanisch)",
+      "beschreibung": "Ein Sein über der Gasse, das bei Betreten ein Netz fallen lässt (Dex DC 13 zum Ausweichen).",
+      "auswirkung": "Gefangennahme (1 Runde bewegungsunfähig)"
+    }
+  ],
+  "abschlussbedingung": "Die Gruppe entkommt den Wächtern (mit oder ohne Beweise) und kehrt zum Harper-Stützpunkt zurück.",
+  "bilder": ["/bilder/taverne_auftrag.jpg", "/bilder/hinterhalt_gasse.jpg"]
+}

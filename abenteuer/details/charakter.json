@@ -1,21 +1,9 @@
 {
-  "name": "charakter",
-  "typ": "Slash-Kommando/Skill",
-  "kommando": "/charakter erstellen",
-  "titel": "Charaktererstellung",
-  "beschreibung": "Interaktive Charaktererstellung für D&D 5e. Führt Spieler durch Rasse, Klasse, Attribute (4d6 Methode), Fertigkeiten und Ausrüstung. Kann über /charakter erstellen oder als Teil des Kampagnenstarts aufgerufen werden.",
-  "grenzen": {
-    "ort": "Virtueller Charaktererstellungs-Raum oder Taverne 'Zum fließenden Tintenfass'",
-    "zeitlimit": "Kein Limit"
-  },
-  "parameter": {
-    "interaktiv": {
-      "typ": "boolean",
-      "standard": true,
-      "beschreibung": "Falls true, fragt die KI Schritt für Schritt nach Bestätigung. Falls false, werden alle Attribute automatisch gewürfelt und zugewiesen."
-    }
-  },
   "schritte": [
+    {
+      "name": "Name",
+      "beschreibung": "Der Name des Charakters ist gleich dem Anzeigename des Discord-Nutzers"
+    },
     {
       "name": "Rassenauswahl",
       "beschreibung": "Spieler wählt eine Rasse. Jede Rasse hat spezielle Attribute-Boni und Fähigkeiten.",
@@ -57,15 +45,12 @@
     },
     {
       "name": "Attributsbestimmung (4d6 Methode)",
-      "beschreibung": "Für jedes der 6 Attribute (STR, DEX, CON, INT, WIS, CHA) wird 4d6 geworfen, der niedrigste Würfel wird gestrichen, die Summe der anderen 3 ergibt den Attributswert. Die Werte können dann den Attributen zugewiesen werden.",
+      "beschreibung": "Für jedes der 6 Attribute (STR, DEX, CON, INT, WIS, CHA) wirf 4d6, der niedrigste Würfel wird gestrichen, die Summe der anderen 3 ergibt den Attributswert. Die Werte können dann den Attributen zugewiesen werden. Du würfelst für den Spieler.",
       "methode": "4d6 drop lowest 3",
       "beispiel": {
         "würfe": ["4d6: [2, 4, 5, 1] → 4+5+2 = 11", "4d6: [3, 3, 6, 2] → 6+3+3 = 12"],
         "ergebnis": "Attribute: 18, 16, 14, 12, 10, 8 (können den Attributen zugewiesen werden)"
-      },
-      "fragen": [
-        "Wie möchtest du die Würfe auf deine Attribute verteilen?"
-      ]
+      }
     },
     {
       "name": "Attribute zuweisen",
@@ -75,11 +60,14 @@
         "werte": [15, 14, 13, 12, 10, 8],
         "rassenboni": {"Zwerg": "+2 CON, +1 STR"},
         "endwerte": {"STR": 16, "DEX": 14, "CON": 15, "INT": 12, "WIS": 10, "CHA": 8}
-      }
+      },
+      "fragen": [
+        "Wie möchtest du die Würfe auf deine Attribute verteilen?"
+      ]
     },
     {
       "name": "Fertigkeiten bestimmen",
-      "beschreibung": "Basierend auf Klasse und Rasse wählt der Spieler Fertigkeiten. KI berechnet die Modifikatoren (Attributswert - 10 / 2).",
+      "beschreibung": "Basierend auf Klasse und Rasse wählt der Spieler Fertigkeiten basierend auf dem D&D 5e Regelwerk. KI berechnet die Modifikatoren (Attributswert - 10 / 2).",
       "beispiel": {
         "klasse": "Waldläufer",
         "fertigkeiten": ["Athletik", "Naturkunde", "Wahrnehmung", "Überleben", "Heimlichkeit"],
@@ -88,68 +76,37 @@
     },
     {
       "name": "Ausrüstung wählen",
-      "beschreibung": "Startausrüstung basierend auf Klasse und Rasse. Spieler kann zwischen Standardpaket oder individueller Auswahl wählen.",
+      "beschreibung": "Startausrüstung basierend auf Klasse und Rasse. Du gibst die Ausrüstung vor.",
       "beispiel": {
         "klasse": "Kämpfer",
-        "optionen": [
-          {"name": "Standard", "inhalt": ["Kettenhemd", "Langschwert", "Schild", "Kurzschwert", "Abenteurerpaket"]},
-          {"name": "Individuell", "inhalt": ["Wähle Waffen", "Wähle Rüstung", "Wähle Ausrüstungsgegenstände"]}
-        ]
+        "inhalt": ["Kettenhemd", "Langschwert", "Schild", "Kurzschwert", "Abenteurerpaket"]
       }
     },
     {
       "name": "Gesinnung bestimmen",
-      "beschreibung": "Spieler wählt eine Gesinnung (z.B. Chaotisch Gut, Neutral, Gesetzlich Böse).",
+      "beschreibung": "Spieler wählt eine Gesinnung.",
       "optionen": [
-        "Gesetzlich Gut (LG)", "Neutral Gut (NG)", "Chaotisch Gut (CG)",
-        "Gesetzlich Neutral (LN)", "Echt Neutral (N)", "Chaotisch Neutral (CN)",
-        "Gesetzlich Böse (LE)", "Neutral Böse (NE)", "Chaotisch Böse (CE)"
+        "Rechtschaffend Gut (LG)", "Neutral Gut (NG)", "Chaotisch Gut (CG)",
+        "Rechtschaffend Neutral (LN)", "Echt Neutral (N)", "Chaotisch Neutral (CN)",
+        "Rechtschaffend Böse (LE)", "Neutral Böse (NE)", "Chaotisch Böse (CE)"
+      ],
+      "fragen": [
+        "Wie ist deine Gesinnung?"
       ]
-    },
-    {
-      "name": "Finalisierung",
-      "beschreibung": "Der Charakterbogen wird als editierbarer, gepinnter Post im Discord-Channel erstellt.",
-      "ausgabe": {
-        "format": "Markdown (siehe AGENTS.md)",
-        "beispiel": "**Name:** Gromm der Zwerg\n===\n**Rasse:** Zwerg | **Klasse:** Kämpfer | **Level:** 1\n**Gesinnung:** Gesetzlich Gut\n**Attribute:** STR 16 | DEX 14 | CON 15 | INT 12 | WIS 10 | CHA 8\n**Fertigkeiten:** Athletik +3, Wahrnehmung +1\n**Ausrüstung:** Kettenhemd, Langschwert, Schild"
-      }
     }
   ],
-  "checkpoints": [
-    {
-      "beschreibung": "Alle Spieler haben ihre Charakterbögen komplett erstellt und gepostet",
-      "entscheidung": "Charaktererstellung abgeschlossen"
-    }
-  ],
-  "abschlussbedingung": "Alle Charakterbögen sind erstellt und als gepinnte Posts im Discord-Channel verfügbar",
-  "ausgabe": {
-    "discord_post": true,
-    "format": "Pinnbare Nachricht mit Markdown-Formatierung",
-    "automatische_berechnungen": [
-      "Trefferpunkte (Klassen-TW + CON-Modifikator)",
-      "Initiative (DEX-Modifikator)",
-      "Angriffsboni (basierend auf Klasse und Attributen)",
-      "Rettungswürfe (basierend auf Klasse)"
-    ]
-  },
   "beispiel_ablauf": {
     "eingabe": "/charakter erstellen",
     "dialog": [
-      "KI: Willkommen zur Charaktererstellung! Welche Rasse möchtest du spielen? (Mensch, Elf, Dunkelelf, Zwerg, Halbling, Halbork, ...)",
-      "Spieler: Zwerg",
-      "KI: Gute Wahl! Zwerge erhalten +2 CON und +1 STR. Welche Klasse? (Barbar, Kämpfer, Kleriker, ...)",
-      "Spieler: Kämpfer",
-      "KI: Perfekt. Jetzt würfeln wir deine Attribute mit 4d6 (höchste 3). Hier sind deine Werte: [15, 14, 13, 12, 10, 8]. Möchtest du sie zuweisen oder neu würfeln?",
-      "Spieler: Zuweisen",
-      "KI: Welchem Attribut möchtest du den Wert 15 zuweisen? (STR, DEX, CON, INT, WIS, CHA)",
-      "Spieler: STR",
-      "KI: Mit Rassenbonus: STR 17, CON 14. Fortfahren mit Fertigkeiten...",
+      "Dungeon Master: Willkommen zur Charaktererstellung Qwendor! Welche Rasse möchtest du spielen? (Mensch, Elf, Dunkelelf, Zwerg, Halbling, Halbork, ...)",
+      "Qwendor: Zwerg",
+      "Dungeon Master: Gute Wahl! Zwerge erhalten +2 CON und +1 STR. Welche Klasse? (Barbar, Kämpfer, Kleriker, ...)",
+      "Qwendor: Kämpfer",
+      "Dungeon Master: Perfekt. Jetzt würfeln wir deine Attribute mit 4d6 (höchste 3). Hier sind deine Werte: [15, 14, 13, 12, 10, 8]. Welchem Attribut möchtest du den Wert 15 zuweisen? (STR, DEX, CON, INT, WIS, CHA)",
+      "Qwendor: STR",
+      "Dungeon Master: Mit Rassenbonus: STR 17. Welchem Attribut möchtest du den Wert 15 zuweisen? (DEX, CON, INT, WIS, CHA)?",
       "...",
-      "KI: Hier ist dein Charakterbogen: [Markdown-Post]"
+      "Dungeon Master: Hier ist dein Charakterbogen: [Markdown-Post]"
     ]
-  },
-  "fehlerbehandlung": {
-    "ungültige_auswahl": "Ungültige Auswahl. Bitte wähle aus den verfügbaren Optionen.",
-    "abbruch": "/charakter abbrechen zum Beenden der Erstellung."
   }
 }
