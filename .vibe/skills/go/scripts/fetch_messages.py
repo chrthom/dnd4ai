@@ -12,7 +12,7 @@ import requests
 from datetime import datetime, timezone
 
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
-CHANNEL_ID = '1499794887011340392'
+CHANNEL_ID = '1499801584618573975'
 BASE_DIR = '/home/christopher/Dokumente/dnd4ai'
 
 
@@ -75,26 +75,26 @@ def fetch_new_messages(after_timestamp):
     return all_messages
 
 
-def append_to_chat(msg_dict):
-    """Fügt eine Nachricht an chat.md an und aktualisiert Last Updated"""
+def append_to_chat(msg_dict, chat_path):
+    """Fügt eine Nachricht an chat.md an"""
     timestamp = format_timestamp(msg_dict['timestamp'])
-    author = msg_dict['author']['username']
-    content = msg_dict['content']
     
-    chat_path = f'{BASE_DIR}/temp/chat.md'
+    # Autor extrahieren - Discord API gibt user-Objekt direkt im Message
+    if 'author' in msg_dict:
+        author = msg_dict['author'].get('username', 'Unknown')
+    elif 'user' in msg_dict:
+        author = msg_dict['user'].get('username', 'Unknown')
+    else:
+        author = 'Unknown'
+    
+    content = msg_dict.get('content', '')
     
     with open(chat_path, 'r') as f:
         file_content = f.read()
     
     # Füge neue Nachricht hinzu
-    new_entry = f"\n---\n\n### {timestamp} - {author}\n\`\`\`\n{content}\n\`\`\`\n"
+    new_entry = f"\n---\n\n### {timestamp} - {author}\n```\n{content}\n```\n"
     file_content = file_content.rstrip() + new_entry
-    
-    # Aktualisiere Last Updated
-    file_content = file_content.replace(
-        '## Last Updated: ' + get_last_timestamp(),
-        f'## Last Updated: {timestamp}'
-    )
     
     with open(chat_path, 'w') as f:
         f.write(file_content)
@@ -102,6 +102,13 @@ def append_to_chat(msg_dict):
 
 def main():
     """Hauptfunktion - führt Schritte 1-3 aus"""
+    chat_path = f'{BASE_DIR}/temp/chat.md'
+    
+    # Stelle sicher, dass chat.md existiert
+    if not os.path.exists(chat_path):
+        with open(chat_path, 'w') as f:
+            f.write("# Discord Chat History\n\n## Last Updated: 1970-01-01T00:00:00.000Z\n")
+    
     last_ts = get_last_timestamp()
     
     if not last_ts:
@@ -114,9 +121,25 @@ def main():
     
     if new_msgs:
         print(f"Gefunden: {len(new_msgs)} neue Nachricht(en)", flush=True)
-        for msg in reversed(new_msgs):  # Älteste zuerst
-            append_to_chat(msg)
-            print(f"  - {msg['timestamp']} von {msg['author']['username']}: {msg['content'][:50]}...")
+        # Aktualisiere Last Updated mit der neuesten Nachricht
+        newest_ts = format_timestamp(new_msgs[0]['timestamp'])
+        
+        # Ersetze Last Updated in der Datei
+        with open(chat_path, 'r') as f:
+            file_content = f.read()
+        
+        file_content = file_content.replace(
+            f'## Last Updated: {last_ts}',
+            f'## Last Updated: {newest_ts}'
+        )
+        
+        with open(chat_path, 'w') as f:
+            f.write(file_content)
+        
+        # Füge alle neuen Nachrichten hinzu (älteste zuerst)
+        for msg in reversed(new_msgs):
+            append_to_chat(msg, chat_path)
+            print(f"  - {msg['timestamp']} von {msg.get('author', msg.get('user', {})).get('username', 'Unknown')}: {msg['content'][:50]}...")
     else:
         print("Keine neuen Nachrichten.", flush=True)
     

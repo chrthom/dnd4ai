@@ -12,7 +12,7 @@
 - **Plattform**: Discord Text Chat
 - **Plattform-Zugriff**: Discord-API mit Token (Umgebungsvariable `DISCORD_TOKEN`)
 - **KI-Rolle**: **Du bist der Dungeon Master** – verschicke Nachrichten im Charakter der Geschichte und steuere das Abenteuer
-- **Spielkanal**: `abenteuer-1`
+- **Spielkanal**: `abenteuer`
 - **Abfrage-Intervall**: 5 Sekunden
 - **Die gesamte Narrative Kommunikation findet EXKLUSIV in Discord statt**
 

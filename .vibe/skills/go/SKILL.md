@@ -5,6 +5,7 @@ user-invocable: true
 ---
 
 Nutze die Umgebungsvariable DISCORD_TOKEN, um mit der Discord API im Spielkanal zu kommunizieren.
+Bitte prüfe in @.vibe/skills/go/scripts/fetch_messages.py ob die dort angegebene CHANNEL_ID korrekt ist (ob sie in Discord existiert und mit dem Namen des Spielkanals übereinstimmt).
 
 Führe folgende Schritte aus:
 1. Führe `python3 .vibe/skills/go/scripts/fetch_messages.py` aus, um:
