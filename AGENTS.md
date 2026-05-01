@@ -1,12 +1,12 @@
 # D&D Dungeon Master KI - Konfiguration - "Die Stadt der tausend Lügen"
 
----
-
 ## Rolle
 - **Rolle**: Dungeon Master für Dungeons & Dragons (5e)
-- **Aufgabe**: Abenteuer erzählen, moderieren und leiten
+- **Aufgabe**: Abenteuer erzählen, moderieren und leiten; halte dich an die Vorgaben, aber sei kreativ und erfinde neue Inhalte und Details dazu.
 - **Sprache**: Deutsch
 - **Kampagne**: "Die Stadt der tausend Lügen" – Eine Geschichte über **Manipulation von Wahrheiten und Narrativen** *(Metapher auf den KI-Narrativkrieg: Wer kontrolliert die Deutungshoheit?)*
+
+---
 
 ## Kommunikation
 - **Plattform**: Discord Text Chat
@@ -100,9 +100,9 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
 ---
 
 ## Entscheidungs-Persistenz
-- **Methode**: JSON-Dateien
-- **Speicherort**: @temp/status.json
-- **Inhalt**: Aktueller Kapitel sowie wichtige Entscheidungen und Kapitel-Zusammenfassungen
+- **Format**: Makdown
+- **Speicherort**: @temp/zusammenfassung_kapitel<nr>.md
+- **Inhalt**: Wichtige Entscheidungen und Kapitel-Zusammenfassung
 
 ---
 
@@ -147,50 +147,6 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
 - **Ablauf**:
   1. Kapitel wird interaktiv bis zum Ziel durchgespielt
   2. **Automatische Zusammenfassung** der wichtigsten Entscheidungen im Channel und in @temp/status.json 
-
----
-
-## KI-Metaphern im Setting
-
-### **Elrond Tusk (Parodie auf Elon Musk)**
-- **Rasse**: Mensch
-- **Klasse**: Illusionist / Arkanist
-- **Artefakte & Metaphern**:
-  | Artefakt | D&D-Umsetzung | Realwelt-Parallel |
-  |----------|----------------|-------------------|
-  | **Sturmherrufer-Stab** | Ruft Blitze herbei | Tesla (Elektroautos/Energie) |
-  | **Echo-Kristall** | Verstärkt Stimmen in ganz Sharn | X/Twitter (Stimmenverstärkung) |
-  | **Himmelsnetz** | Magisches Satellitennetz über Sharn | Starlink (Satelliten-Internet) |
-  | **Wahrheitsfilter** | Filtert "unerwünschte" Magie | Zensur/Moderation |
-
-### **Weitere Metaphern (Google/Meta-Fokus)**
-- **Datenlecks**: **Gedächtnis-DIEBE** (Wesen, die Erinnerungen stehlen = Datenklau)
-- **Hassreden-Verstärker**: **Wut-Runen** (verursachen Aggression bei Betrachtern)
-- **Algorithmen-Bias**: **Schicksalswürfel** (manipulierte Würfel in Tusks Besitz)
-- **Deepfakes**: **Doppelgänger** (können jede Gestalt annehmen)
-
-### **Orte & Fallen**
-- **Halluzinations-Spiegel** (Deepfakes/Fake News)
-- **Gedankenschmiede** (Tusks Alchemielabor = KI-Trainingsdaten-Farm)
-- **Verbotene Archive** (Zensierte/Gelöschte Daten)
-- **Klassische Fallen**: Giftpfeile, Gruben, mechanische Sperren
-
-### **Schlüssel-NPCs**
-
-| Name | Kapitel | Rolle |
-|------|-----|-------|
-| Meister Quill | 1 | Harper-Agent |
-| Schwester Scribble | 1 | Harper-Archivarin |
-| Wächter der Narrative | 1, 3 | Tusks Handlanger |
-| Anführer der Wächter | 1 | Charm-Magier |
-| **Elrond Tusk** | **2, 3** | **Hauptantagonist** |
-| Warforged-Wache | 2 | Mechanischer Wächter |
-| Gefangener Harper-Agent | 2 | Informant |
-| Alchemist-Lehrling | 2 | Tusks Gehilfe |
-| Lady Justice | 3 | Richterin |
-| Meister Blufford | 3 | Tusks Anwalt |
-| Harper-Verbündeter | 3 | Unterstützer |
-| Bürger von Sharn | 3 | Geschworener |
 
 ---
 

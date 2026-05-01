@@ -49,7 +49,15 @@
     {
       "titel": "Hinterhalt in den Gassen",
       "beschreibung": "Die Gruppe wird von 2-3 Wächtern der Narrative in einer dunklen Gasse angegriffen. Einer von ihnen trägt ein Harper-Abzeichen – ein Doppelgänger!",
-      "bild": "/bilder/hinterhalt_gasse.jpg"
+      "bild": "/bilder/hinterhalt_gasse.jpg",
+      "fallen": [
+        {
+          "name": "Gassen-Falle",
+          "typ": "Klassisch (mechanisch)",
+          "beschreibung": "Ein Seil über der Gasse, das bei Betreten ein Netz fallen lässt (Dex DC 13 zum Ausweichen).",
+          "auswirkung": "Gefangennahme (1 Runde bewegungsunfähig)"
+        }
+      ]
     }
   ],
   "checkpoints": [
@@ -75,15 +83,5 @@
       ]
     }
   ],
-  "fallenzahl": 1,
-  "fallen": [
-    {
-      "name": "Gassen-Falle",
-      "typ": "Klassisch (mechanisch)",
-      "beschreibung": "Ein Seil über der Gasse, das bei Betreten ein Netz fallen lässt (Dex DC 13 zum Ausweichen).",
-      "auswirkung": "Gefangennahme (1 Runde bewegungsunfähig)"
-    }
-  ],
-  "abschlussbedingung": "Die Gruppe entkommt den Wächtern (mit oder ohne Beweise) und kehrt zum Harper-Stützpunkt zurück.",
-  "bilder": ["/bilder/taverne_auftrag.jpg", "/bilder/hinterhalt_gasse.jpg"]
+  "abschlussbedingung": "Die Gruppe entkommt den Wächtern (mit oder ohne Beweise) und kehrt zum Harper-Stützpunkt zurück."
 }

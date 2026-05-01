@@ -12,7 +12,7 @@ import requests
 from datetime import datetime, timezone
 
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
-CHANNEL_ID = '1499801584618573975'
+CHANNEL_ID = '1499803937182584992'
 BASE_DIR = '/home/christopher/Dokumente/dnd4ai'
 
 
