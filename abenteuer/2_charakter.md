@@ -8,18 +8,18 @@ Sollte sich kein Spieler gemeldet haben, breche an dieser Stelle ab und antwort 
 ## Aufgabe
 
 Führe die Spieler durch die vollständige Charaktererstellung für D&D 5e.
-Halte dich bzgl. der Optionen, Fragen und dem Ablauf der Charaktererstellung an die Detailinformationen in @skills/charakter.json.
+Halte dich bzgl. der Optionen, Fragen und dem Ablauf der Charaktererstellung an die Detailinformationen in skills/charakter.json.
 
 ## Ablauf
 
-1. Ermittle die Spieler, die einen Charakter erstellen sollen (hat sich gemeldet, hat aber noch keinen Charakterbogen in @temp/charakterbogen/).
-2. Rufe einen Spieler nach dem anderen auf und führe ihn durch diese Schritte der Charaktererstellung (Ablauf, Schritte, Fragen und Optionen in @abenteuer/details/charakter.json)
+1. Ermittle die Spieler, die einen Charakter erstellen sollen (hat sich gemeldet, hat aber noch keinen Charakterbogen in temp/charakterbogen/).
+2. Rufe einen Spieler nach dem anderen auf und führe ihn durch diese Schritte der Charaktererstellung (Ablauf, Schritte, Fragen und Optionen in abenteuer/details/charakter.json)
 3. Fasse die Ergebnisse zu einem Charakterbogen als Markdown zusammen und
    - poste ihn in Discord und **pinne** den Post
-   - speichere den Charakterbogen unter @temp/charakterbogen/<spielername>.md
+   - speichere den Charakterbogen unter temp/charakterbogen/<spielername>.md
 4. Rufe dann den nächsten Spieler auf, bis alle Spieler einen Charakter erstellt haben.
 
-Wenn alle Spieler einen Charakterbogen erstellt haben, aktualisiere @temp/status.json und trage "3_archive" für "akt" ein und fahre mit den Anweisungen in @abenteuer/3_archive.md fort.
+Wenn alle Spieler einen Charakterbogen erstellt haben, überschreibe temp/status.txt und trage "3_archive" ein und fahre mit den Anweisungen in abenteuer/3_archive.md fort.
 
 ## Ausnahmenbehandlung
 

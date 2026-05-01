@@ -14,11 +14,12 @@ from datetime import datetime, timezone
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
 CHANNEL_ID = '1499803937182584992'
 BASE_DIR = '/home/christopher/Dokumente/dnd4ai'
+CHAT_DIR = f'{BASE_DIR}/@temp'
 
 
 def get_last_timestamp():
     """Liest den letzten Zeitstempel aus chat.md"""
-    chat_path = f'{BASE_DIR}/temp/chat.md'
+    chat_path = f'{CHAT_DIR}/chat.md'
     if not os.path.exists(chat_path):
         return None
     with open(chat_path, 'r') as f:
@@ -89,8 +90,11 @@ def append_to_chat(msg_dict, chat_path):
     
     content = msg_dict.get('content', '')
     
-    with open(chat_path, 'r') as f:
-        file_content = f.read()
+    if os.path.exists(chat_path):
+        with open(chat_path, 'r') as f:
+            file_content = f.read()
+    else:
+        file_content = "# Discord Chat History\n\n## Last Updated: 1970-01-01T00:00:00.000Z\n"
     
     # Füge neue Nachricht hinzu
     new_entry = f"\n---\n\n### {timestamp} - {author}\n```\n{content}\n```\n"
@@ -102,7 +106,7 @@ def append_to_chat(msg_dict, chat_path):
 
 def main():
     """Hauptfunktion - führt Schritte 1-3 aus"""
-    chat_path = f'{BASE_DIR}/temp/chat.md'
+    chat_path = f'{CHAT_DIR}/chat.md'
     
     # Stelle sicher, dass chat.md existiert
     if not os.path.exists(chat_path):

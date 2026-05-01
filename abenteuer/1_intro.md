@@ -60,4 +60,4 @@ Nach dem Intro:
 *"Die Wahrheit wird in dieser Stadt gejagt. Und wir brauchen Jäger. Wer seid ihr? Stellt euch vor, damit ich weiß, mit wem ich das Unmögliche versuche."*
 ```
 
-Aktualisiere @temp/chat.md: "akt" ist jetzt "2_charakter". Fahre mit den Anweisungen in @abenteuer/2_charakter.md fort.
+Aktualisiere temp/chat.md: "akt" ist jetzt "2_charakter". Fahre mit den Anweisungen in abenteuer/2_charakter.md fort.
