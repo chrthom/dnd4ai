@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
-CHANNEL_ID = '1499810005845807215'
+CHANNEL_ID = '1502281677660225546'
 # Projekt-Stammverzeichnis dynamisch ermitteln:
 # Skript liegt unter <root>/.claude/skills/go/scripts/fetch_messages.py
 BASE_DIR = str(Path(__file__).resolve().parents[4])
@@ -84,12 +84,9 @@ def append_to_chat(msg_dict, chat_path):
     timestamp = format_timestamp(msg_dict['timestamp'])
     
     # Autor extrahieren - Discord API gibt user-Objekt direkt im Message
-    if 'author' in msg_dict:
-        author = msg_dict['author'].get('username', 'Unknown')
-    elif 'user' in msg_dict:
-        author = msg_dict['user'].get('username', 'Unknown')
-    else:
-        author = 'Unknown'
+    # Bevorzuge global_name (Anzeigename), fallback auf username
+    user_obj = msg_dict.get('author') or msg_dict.get('user') or {}
+    author = user_obj.get('global_name') or user_obj.get('username') or 'Unknown'
     
     content = msg_dict.get('content', '')
     

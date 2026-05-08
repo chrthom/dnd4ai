@@ -3,7 +3,7 @@
 ## Aufgabe
 Stelle die Welt, das Setting und die Ausgangssituation der Kampagne vor. Ende in der Taverne "Zum fließenden Tintenfass", wo Meister Quill (Harper-Agent) die Gruppe anheuert. Leite nahtlos zur Charaktererstellung über.
 Schmücke die Intro und Spielwelt kreativ mit weiteren Details aus.
-Siehe auch @../akte/akt_1.json für Akt 1 Details (folgt nach dieser Intro).
+Siehe auch @abenteuer/details/kapitel_1.json für Akt 1 Details (folgt nach dieser Intro und Charaktererstellung).
 
 ## Ablauf
 1. Welt vorstellen: **Eberron** – Magie als Technologie
