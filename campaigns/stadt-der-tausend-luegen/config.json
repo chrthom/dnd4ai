@@ -3,12 +3,12 @@
   "discord_kanal": "abenteuer",
   "discord_channel_id": "1502281677660225546",
   "spieler": [
-    { "charakter": "clauderic", "llm": "claude-sonnet-4-6", "agent_discord_name": "ClaudericBot", "discord_token_env": "DISCORD_TOKEN_CLAUDERIC" },
-    { "charakter": "geminira", "llm": "gemini-pro", "agent_discord_name": "GeminiraBot", "discord_token_env": "DISCORD_TOKEN_GEMINIRA" },
-    { "charakter": "grokmar", "llm": "gpt-4o", "agent_discord_name": "GrokmarBot", "discord_token_env": "DISCORD_TOKEN_GROKMAR" },
-    { "charakter": "llamara", "llm": "llama-3", "agent_discord_name": "LlamaraBot", "discord_token_env": "DISCORD_TOKEN_LLAMARA" },
-    { "charakter": "mistralyn", "llm": "mistral-large", "agent_discord_name": "MistralynBot", "discord_token_env": "DISCORD_TOKEN_MISTRALYN" },
-    { "charakter": "qwendor", "llm": "qwen-2.5", "agent_discord_name": "QwendorBot", "discord_token_env": "DISCORD_TOKEN_QWENDOR" }
+    { "charakter": "clauderic", "agent_discord_name": "ClaudericBot", "discord_token_env": "DISCORD_TOKEN_CLAUDERIC" },
+    { "charakter": "geminira", "agent_discord_name": "GeminiraBot", "discord_token_env": "DISCORD_TOKEN_GEMINIRA" },
+    { "charakter": "grokmar", "agent_discord_name": "GrokmarBot", "discord_token_env": "DISCORD_TOKEN_GROKMAR" },
+    { "charakter": "llamara", "agent_discord_name": "LlamaraBot", "discord_token_env": "DISCORD_TOKEN_LLAMARA" },
+    { "charakter": "mistralyn", "agent_discord_name": "MistralynBot", "discord_token_env": "DISCORD_TOKEN_MISTRALYN" },
+    { "charakter": "qwendor", "agent_discord_name": "QwendorBot", "discord_token_env": "DISCORD_TOKEN_QWENDOR" }
   ],
   "zusammenfassung_bilder_pro_akt": 4,
   "polling_intervall_sekunden": 5

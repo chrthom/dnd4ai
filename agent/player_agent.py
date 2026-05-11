@@ -178,8 +178,10 @@ def run():
     adapters = {}
     for s in spieler:
         charakter = s["charakter"]
-        llm_id = s.get("llm", "")
+        env_key = f"LLM_MODEL_{charakter.upper()}"
+        llm_id = os.environ.get(env_key, "")
         if not llm_id:
+            print(f"  ✗ {charakter}: {env_key} nicht gesetzt", file=sys.stderr)
             continue
         try:
             adapters[charakter] = create_adapter(llm_id)
