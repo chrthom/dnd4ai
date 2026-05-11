@@ -2,7 +2,7 @@
 """
 Player Bot – steuert alle LLM-Spieler-Charaktere in Discord.
 
-Startet mit: python3 agent/player_bot.py
+Startet mit: python3 agent/player_agent.py
 Benötigt: .env mit DISCORD_TOKEN, OPENAI_API_KEY, ANTHROPIC_API_KEY, CAMPAIGN
 """
 import json
@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from llm import create_adapter
-from discord_bot import send_message
+from discord_agent import send_message
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 CAMPAIGN = os.environ.get("CAMPAIGN", "stadt-der-tausend-luegen")
@@ -142,12 +142,12 @@ def build_system_prompt(charakter: str, personality: dict) -> str:
 
 GROUP_TRIGGERS = ["was tut die gruppe", "wer möchte handeln", "was macht ihr"]
 
-def should_respond(charakter: str, bot_name: str, message_content: str) -> bool:
+def should_respond(charakter: str, agent_name: str, message_content: str) -> bool:
     """Prüft ob dieser Charakter auf die Nachricht reagieren soll."""
     lower = message_content.lower()
     if any(trigger in lower for trigger in GROUP_TRIGGERS):
         return True
-    return charakter.lower() in lower or bot_name.lower() in lower
+    return charakter.lower() in lower or agent_name.lower() in lower
 
 # --- Nachrichten-History für LLM ---
 
@@ -207,14 +207,14 @@ def run():
 
                     for s in spieler:
                         charakter = s["charakter"]
-                        bot_name = s.get("bot_discord_name", charakter)
+                        agent_name = s.get("agent_discord_name", charakter)
                         token_env = s.get("discord_token_env", "")
-                        bot_token = os.environ.get(token_env, "") if token_env else ""
+                        agent_token = os.environ.get(token_env, "") if token_env else ""
                         adapter = adapters.get(charakter)
 
-                        if not adapter or not bot_token:
+                        if not adapter or not agent_token:
                             continue
-                        if not should_respond(charakter, bot_name, content):
+                        if not should_respond(charakter, agent_name, content):
                             continue
 
                         personality = load_personality(charakter)
@@ -227,7 +227,7 @@ def run():
                         print(f"[{charakter}] antwortet auf: {content[:60]}...")
                         try:
                             response = adapter.complete(system_prompt, messages)
-                            send_message(bot_token, channel_id, response)
+                            send_message(agent_token, channel_id, response)
                             print(f"[{charakter}] → {response[:80]}...")
                         except Exception as e:
                             print(f"[{charakter}] Fehler: {e}", file=sys.stderr)
