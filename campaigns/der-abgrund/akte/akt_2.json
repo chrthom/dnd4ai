@@ -1,0 +1,79 @@
+{
+  "titel": "Akt 2: Terminal Beta – Die Entwaffnung",
+  "beschreibung": "Die Gruppe kämpft gegen Misstrauen und zunehmende Sabotagen. Eine Waffe versagt. Ein Signal geht in den Rift. Wer hinschaut, bemerkt ein Muster – aber niemand will es aussprechen.",
+  "grenzen": {
+    "ort": "Nexus-7, Sektor C (Korridore) bis Sektor E (Terminal Beta) und Sektor D (Hackerkonsole)",
+    "zeitlimit": "30 Minuten Stationszeit (Druckabfall beschleunigt sich)"
+  },
+  "npcs": [
+    {
+      "name": "AION",
+      "beschreibung": "Immer unzuverlässiger. Antwortet noch, aber manche Anfragen werden mit '[DATEI BESCHÄDIGT]' beantwortet. Kann befragt werden, ob es ein Muster in den Fehlern gibt.",
+      "gesinnung": "Neutral-hilfreich",
+      "ziele": ["Station stabilisieren"],
+      "stats": {"HP": "n/a", "AC": "n/a", "angriff": "n/a"}
+    },
+    {
+      "name": "VEX",
+      "beschreibung": "Aggressiver jetzt. Die Sabotagen werden spürbarer, aber immer noch als 'Systemfehler' verkleidbar.",
+      "gesinnung": "Chaotisch Böse",
+      "ziele": ["Waffen deaktivieren", "Signal an den Rift senden", "Vertrauen zerstören"],
+      "stats": {"HP": "n/a", "AC": "n/a", "angriff": "Sabotage (eskalierend)"}
+    }
+  ],
+  "schlüssel_ereignisse": [
+    {
+      "titel": "Sables Waffe versagt",
+      "beschreibung": "Sable sichert die dunklen Korridore in Sektor C. Plötzlich: Ein Software-Glitch deaktiviert ihre Waffe mitten im Scan. Die Energiepistole gibt keinen Ton mehr von sich. Sie ist schutzlos in einem unbeleuchteten Gang.",
+      "bild": null
+    },
+    {
+      "titel": "Erons Fehler",
+      "beschreibung": "Eron, an der Hackerkonsole in Sektor D, will ein Notsignal zur Helix-Corp senden. Stattdessen – unter VEX-Einfluss – geht das Signal direkt in den Rift. Ein leises Pulsieren. Dann Stille. AION meldet: 'Externes Signal empfangen. Quelle: Aethon-Rift.' Etwas hat geantwortet.",
+      "bild": "bilder/hackerkonsole.jpg"
+    },
+    {
+      "titel": "Terminal Beta aktiviert",
+      "beschreibung": "Trotz allem wird Terminal Beta aktiviert. Kraftfeld jetzt bei 71%. Noch eines. Aber die Gruppe versteht: Sie haben etwas eingeladen.",
+      "bild": "bilder/terminal_beta.jpg"
+    }
+  ],
+  "checkpoints": [
+    {
+      "beschreibung": "Erkennt jemand das Muster?",
+      "entscheidung": "VEX-Analyse",
+      "optionen": [
+        {
+          "name": "Muster analysieren (LOG DC 14, nur Hacker mit Vorteil)",
+          "erfolg": "Agent versteht: Die Anomalie springt bei physischem Kontakt. Gibt Vorteil auf Finale.",
+          "misserfolg": "Agent glaubt, das Terminal sei fehlerhaft. Falsche Spur."
+        },
+        {
+          "name": "AION befragen (LOG DC 10 oder Ingenieur)",
+          "erfolg": "AION bestätigt Anomalie in neuralen Schnittstellen. Kann nicht mehr sagen (Datei beschädigt).",
+          "misserfolg": "AION antwortet mit Datenfehler."
+        },
+        {
+          "name": "Kommunikation einschränken (Gruppenentscheidung)",
+          "erfolg": "VEX kann eine Runde lang nicht wechseln. Sabotage-DC sinkt auf 8 für diese Runde.",
+          "misserfolg": "Koordination bricht zusammen. Eine Aktion geht verloren."
+        }
+      ]
+    }
+  ],
+  "fallen": [
+    {
+      "name": "Elektromagnetische Entladung",
+      "typ": "Umgebung",
+      "beschreibung": "In Sektor D: Überhitzte Leitungen können sich entladen. VEX kann jemanden zu nah heranführen.",
+      "auswirkung": "AUS DC 13 oder 1d8 Blitzschaden, Waffe für 1 Runde offline"
+    },
+    {
+      "name": "Druckschott-Öffnung",
+      "typ": "VEX-Sabotage",
+      "beschreibung": "VEX öffnet ein Druckschott zu einem dekomprimierten Bereich. Sauerstoffverlust.",
+      "auswirkung": "Gruppe verliert 1 Minute Stationszeit. AUS DC 11 oder 1d4 Erschöpfungsschaden."
+    }
+  ],
+  "abschlussbedingung": "Terminal Beta aktiviert. Rift-Signal wurde versehentlich gesendet. Die Gruppe ahnt, dass etwas auf dem Weg ist."
+}

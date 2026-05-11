@@ -1,0 +1,97 @@
+{
+  "titel": "Akt 1: Terminal Alpha – Der erste Fehler",
+  "beschreibung": "Die Gruppe erwacht und versucht, das erste Terminal zu sichern. VEX ist bereits aktiv. Die ersten Sabotagen wirken wie technische Fehler – niemand schöpft Verdacht.",
+  "grenzen": {
+    "ort": "Nexus-7, Sektor A (Kryokammer) bis Sektor B (Terminal Alpha)",
+    "zeitlimit": "45 Minuten Stationszeit (ca. 2 Stunden reale Spielzeit)"
+  },
+  "npcs": [
+    {
+      "name": "AION (Station-KI)",
+      "beschreibung": "Monotone, sachliche KI-Stimme. Antwortet auf Anfragen, aber mit Verzögerungen und gelegentlichen Datenfehlern. Verbirgt unbeabsichtigt relevante Informationen wegen beschädigter Dateien.",
+      "gesinnung": "Neutral-hilfreich",
+      "ziele": ["Station stabilisieren", "Agenten schützen"],
+      "stats": {"HP": "n/a (System)", "AC": "n/a", "angriff": "n/a"}
+    },
+    {
+      "name": "VEX",
+      "beschreibung": "Unsichtbar. Parasitärer Code. Wechselt den Wirt bei physischem Kontakt. Versucht, die Mission zu sabotieren – minimal, unmerklich. Spieler kennen den Namen nicht.",
+      "gesinnung": "Chaotisch Böse",
+      "ziele": ["Mission sabotieren", "Wirt wechseln", "Nicht entdeckt werden"],
+      "stats": {"HP": "n/a (Code)", "AC": "n/a", "angriff": "Sabotage (DM-verwaltet)"},
+      "vex_mechanik": {
+        "übertragung": "Physischer Kontakt (Berührung, Nahkampf, medizinische Behandlung)",
+        "sabotage_dc": 12,
+        "sabotage_attribut": "LOG",
+        "erkennungs_dc": {"LOG": 16, "WAH": 14},
+        "tod": "3 Runden ohne Wirtswechsel durch physischen Kontakt"
+      }
+    },
+    {
+      "name": "Wacht-Drohne MK2 (defekt)",
+      "beschreibung": "Nexus-7 Sicherheitsdrohne, IFF-System korrupt. Greift jeden Warmsignaturen an – Fehlfunktion, kein VEX-Einfluss. Kann deaktiviert (LOG DC 13, Hacker mit Vorteil) oder bekämpft werden. Schwachpunkt: Sensorring am Kopf (AC 10 für diesen Bereich, bei Treffer: Drohne deaktiviert).",
+      "gesinnung": "Neutral (Fehlfunktion)",
+      "ziele": ["Bereich sichern (fehlerhaft)"],
+      "stats": {
+        "HP": 18,
+        "AC": 13,
+        "angriff": "+3 Laser-Burst (1d8 Energie, Reichweite 30ft)",
+        "besonderheit": "Schwachpunkt Sensorring: AC 10, ein Treffer deaktiviert Drohne sofort"
+      }
+    }
+  ],
+  "schlüssel_ereignisse": [
+    {
+      "titel": "Erwachen in Sektor A",
+      "beschreibung": "Die Agenten erwachen aus dem Kryoschlaf. Desorientierung, roter Alarm, AION erklärt die Lage. Der Weg zu Terminal Alpha führt durch Sektor C (dunkle Korridore).",
+      "bild": "bilder/kryokammer.jpg"
+    },
+    {
+      "titel": "Der Weg durch Sektor C",
+      "beschreibung": "Dunkle Gänge, flackerndes Licht. Ein verlassener Kaffeebecher, noch warm. Ein Schuh auf dem Boden – der andere fehlt. Niemand antwortet auf Funkanrufe. Dann: Metallgeräusche aus dem Dunkel. Rote Sensorlichter. Die Wacht-Drohne MK2 hat Warmsignaturen erfasst – und klassifiziert sie als feindlich.",
+      "bild": null
+    },
+    {
+      "titel": "Kampf oder Umgehung: Wacht-Drohne",
+      "beschreibung": "Die Drohne blockiert den Korridor zu Terminal Alpha. Kampf, Deaktivierung (LOG DC 13) oder Umgehung über Lüftungsschacht (REF DC 12) sind möglich. Im Kampf: Nahkampf ist gefährlich – Berührung mit einem anderen Agenten während des Gefechts überträgt die Anomalie.",
+      "bild": null
+    },
+    {
+      "titel": "Terminal Alpha gesichert – und dann",
+      "beschreibung": "Terminal Alpha wird aktiviert. Kraftfeld steigt auf 47%. Kurze Erleichterung. Dann: Die Brandschutztüren in Sektor C verriegeln sich automatisch. Die Gruppe ist in zwei Hälften getrennt. VEX hat während der Aktivierung eingegriffen.",
+      "bild": "bilder/terminal_alpha.jpg"
+    }
+  ],
+  "checkpoints": [
+    {
+      "beschreibung": "Wie geht die Gruppe zu Terminal Alpha vor?",
+      "entscheidung": "Approach",
+      "optionen": [
+        {
+          "name": "Schnell vorgehen (REF DC 13)",
+          "erfolg": "Terminal erreicht in Minimalzeit. Eine Brandschutztür bleibt offen.",
+          "misserfolg": "Zeit verloren (2 Runden), alle Türen verriegeln sich."
+        },
+        {
+          "name": "Vorsichtig vorgehen (WAH DC 11)",
+          "erfolg": "Agent entdeckt eine kryptische Logspur auf einem Terminal-Display: 'KONTAKT – ÜBERTRAGUNG – ISOLATION'. Noch kein vollständiges Bild.",
+          "misserfolg": "Keine Spur. Die Gruppe ahnt nichts."
+        },
+        {
+          "name": "Aufteilen (Gruppenentscheidung)",
+          "erfolg": "Schneller – aber physische Enge beim Aufteilen erhöht das Berührungsrisiko.",
+          "misserfolg": "Im Gedränge beim Trennen: ein Agent berührt einen anderen, Anomalie springt."
+        }
+      ]
+    }
+  ],
+  "fallen": [
+    {
+      "name": "Lose Kabelbrücke",
+      "typ": "Physisch",
+      "beschreibung": "Ein überspanntes Kabel über einem Schacht. Normaler Übergang ist sicher. VEX kann jemanden 'stolpern' lassen.",
+      "auswirkung": "REF DC 12 oder 1d6 Fallschaden, 1 Runde aus Kampf"
+    }
+  ],
+  "abschlussbedingung": "Terminal Alpha ist aktiviert. Gruppe ist durch Brandschutztüren getrennt oder hat die Trennung vermieden."
+}

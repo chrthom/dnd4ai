@@ -1,0 +1,97 @@
+{
+  "kampagne": "der-abgrund",
+  "ueberschreibt": "engine/regeln/charakter.json",
+  "hinweis": "Diese Datei ersetzt die Standard-D&D-Charaktererstellung für diese Sci-Fi-Kampagne.",
+
+  "attribute": {
+    "umbenennung": {
+      "STR": "PHYS (Physische Stärke)",
+      "DEX": "REF (Reflexe)",
+      "CON": "AUS (Ausdauer)",
+      "INT": "LOG (Logik)",
+      "WIS": "WAH (Wahrnehmung)",
+      "CHA": "SOZ (Soziale Kompetenz)"
+    },
+    "methode": "4d6 drop lowest, wie Standard"
+  },
+
+  "schritte": [
+    {
+      "name": "Name & Codename",
+      "beschreibung": "Der Name des Agenten ist gleich dem Anzeigename des Discord-Nutzers. Zusätzlich wählt der Spieler einen Codenamen (z.B. 'Ghostwire', 'Ironclad', 'Null')."
+    },
+    {
+      "name": "Hintergrund (ersetzt Rasse)",
+      "beschreibung": "Der Hintergrund des Agenten bestimmt Attribut-Boni und eine Spezialfähigkeit.",
+      "optionen": [
+        {"name": "Mechanisch Augmentiert", "boni": "+2 LOG, +1 AUS", "besonderheit": "Direkte Hardware-Verbindung: Terminals 1 Runde schneller aktivieren"},
+        {"name": "Militärisch Ausgebildet", "boni": "+2 PHYS, +1 AUS", "besonderheit": "Kampfreflexe: +2 Initiative, Vorteil auf Entwaffnungs-Rettungswürfe"},
+        {"name": "Wissenschaftlich Geschult", "boni": "+2 LOG, +1 WAH", "besonderheit": "Mustererkennung: Einmal pro Szene LOG-Check ohne Würfeln (automatisch DC 10 bestanden)"},
+        {"name": "Straßen-Überlebender", "boni": "+2 REF, +1 SOZ", "besonderheit": "Instinkt: 1/Tag automatisch Vorteil auf einen Rettungswurf nach Wahl"},
+        {"name": "Ex-Pilot", "boni": "+2 REF, +1 LOG", "besonderheit": "Systemkontrolle: Kann AION direkt ansprechen ohne Terminal (Reichweite: Sektor)"},
+        {"name": "Medizinisch Konditioniert", "boni": "+2 WAH, +1 SOZ", "besonderheit": "Diagnose: Kann mit WAH DC 12 erkennen, ob ein Agent unter VEX-Einfluss steht"}
+      ]
+    },
+    {
+      "name": "Agent-Profil (ersetzt Klasse)",
+      "beschreibung": "Das Profil bestimmt Trefferpunkte, primäre Attribute und Spezialfähigkeiten.",
+      "optionen": [
+        {
+          "name": "Soldat",
+          "trefferwürfel": "d10",
+          "primär": ["PHYS", "REF"],
+          "besonderheit": "Deckungsfeuer (Aktion): Zwingt Gegner, REF DC 14 oder Angriff verfehlt. Rüstungsbonus: +2 AC in Deckung."
+        },
+        {
+          "name": "Hacker",
+          "trefferwürfel": "d6",
+          "primär": ["LOG", "REF"],
+          "besonderheit": "Systemintrusion: Kann gesperrte Türen/Terminals mit LOG DC 12 öffnen. Systemdiagnose: Kann Anomalien und Interferenzen in Stationssystemen mit LOG DC 13 identifizieren."
+        },
+        {
+          "name": "Mediziner",
+          "trefferwürfel": "d8",
+          "primär": ["WAH", "SOZ"],
+          "besonderheit": "Notfallversorgung: Stellt 1d8+WAH-Mod HP wieder her (2/langer Rest). Biodiagnose: Kann mit WAH DC 11 neurologische Unregelmäßigkeiten bei Agenten erkennen."
+        },
+        {
+          "name": "Ingenieur",
+          "trefferwürfel": "d8",
+          "primär": ["LOG", "AUS"],
+          "besonderheit": "Notfallreparatur: Kann beschädigte Stationssysteme mit LOG DC 13 reparieren. Terminals: Aktivierung in halber Zeit."
+        },
+        {
+          "name": "Späher",
+          "trefferwürfel": "d10",
+          "primär": ["REF", "WAH"],
+          "besonderheit": "Lautloses Vorgehen: Vorteil auf alle Heimlichkeit-Checks. Sensornavigation: Kann alternative Routen durch die Station finden, abseits der überwachten Hauptkorridore."
+        }
+      ]
+    },
+    {
+      "name": "Attributsbestimmung (4d6 Methode)",
+      "beschreibung": "Wie Standard-D&D, aber mit Sci-Fi-Attributnamen. DM würfelt für den Spieler 6 Werte."
+    },
+    {
+      "name": "Attribute zuweisen",
+      "beschreibung": "Werte auf PHYS/REF/AUS/LOG/WAH/SOZ verteilen. Hintergrund-Boni addieren.",
+      "hinweis": "Primärattribute des Profils sollten bevorzugt werden."
+    },
+    {
+      "name": "Ausrüstung (stationsbasiert)",
+      "beschreibung": "Alle Agenten starten mit: Notfallanzug (AC 12), Energiepistole (1d6+REF), Communicator (beschädigt – eingeschränkte Funktion), Medipack (1×, heilt 1d6 HP).",
+      "profil_extras": {
+        "Soldat": "Zusätzlich: Sturmgewehr (1d10, 2H), Schockschild (1/Tag, AC +3 für 1 Runde)",
+        "Hacker": "Zusätzlich: Datendeck (Hacking-Gerät, +2 auf LOG-Checks für Systeme), Tarnmodul",
+        "Mediziner": "Zusätzlich: Medikit Deluxe (2d8 Heilung, 3×), Diagnosescanner",
+        "Ingenieur": "Zusätzlich: Werkzeugset, Notfall-Schweißgerät (kann Türen versiegeln/öffnen)",
+        "Späher": "Zusätzlich: Tarnanzug (Vorteil auf Heimlichkeit), Sensorgranate (1×, scannt Sektor)"
+      }
+    },
+    {
+      "name": "VEX-Anfälligkeit (geheim, nur DM)",
+      "beschreibung": "Jeder Agent hat eine VEX-Anfälligkeit basierend auf SOZ-Modifikator: Je höher SOZ, desto kommunikativer → desto häufiger potenzieller VEX-Träger. DM notiert dies verdeckt.",
+      "hinweis": "NICHT dem Spieler mitteilen. Der Spieler erfährt nie seine eigene VEX-Anfälligkeit direkt."
+    }
+  ]
+}

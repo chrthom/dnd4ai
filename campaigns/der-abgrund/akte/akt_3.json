@@ -1,0 +1,94 @@
+{
+  "titel": "Akt 3: Terminal Gamma – Der Abgrund antwortet",
+  "beschreibung": "Kael taucht auf – aber er ist nicht mehr er selbst. Die Rift-Wesen sind da. Die Gruppe begreift endlich, was sie die ganze Zeit weitergegeben hat. Eine unmögliche Entscheidung.",
+  "grenzen": {
+    "ort": "Nexus-7, Sektor F (Terminal Gamma) und angrenzende Sektoren",
+    "zeitlimit": "20 Minuten Stationszeit (Rift-Wesen: Ankunft in 4 Minuten)"
+  },
+  "npcs": [
+    {
+      "name": "Kael (Rift-transformiert)",
+      "beschreibung": "Crewmitglied, Techniker. Wurde in Sektor G vom Rift berührt – zu lange, zu nah. Er ist noch da, irgendwo. Aber das, was seinen Körper jetzt bewegt, will Terminal Gamma nicht schließen – es will es öffnen. BOSS-KAMPF. Kann mit SOZ DC 16 aus dem Zustand gebrochen werden (er kämpft innerlich dagegen an). Bei 50% HP: Kael taucht für 1 Runde auf, flüstert Hinweise. Wenn Spieler ihn absichtlich töten, trägt das Gewicht ins Ende.",
+      "gesinnung": "Chaotisch Böse (überwältigt)",
+      "ziele": ["Terminal Gamma öffnen statt schließen", "Wirt für Rift-Entität sein"],
+      "stats": {
+        "HP": 28,
+        "AC": 14,
+        "angriff": "+5 Griffangriff (1d8+3 physisch) – bei Treffer: berührender Agent muss LOG DC 13 bestehen oder die Anomalie springt auf ihn über",
+        "spezial": "Bei 50% HP: Kael spricht kurz klar – ein Satz, ein Hinweis, dann ist er wieder weg"
+      }
+    },
+    {
+      "name": "Rift-Sonde",
+      "beschreibung": "Schwimmt durch Wände wie durch Wasser. Schimmernde Konturen, kein Gesicht. Erkundet zuerst, greift an wenn blockiert.",
+      "gesinnung": "Neutral (instinktgesteuert)",
+      "ziele": ["Terminal Gamma finden", "Rift-Verbindung sichern"],
+      "stats": {"HP": 18, "AC": 14, "angriff": "+4 (Energiestrahl, 1d8 psychisch, Reichweite 30ft)"}
+    },
+    {
+      "name": "Rift-Ankerer",
+      "beschreibung": "Größer. Langsamer. Kommt nach Kael. Wenn es sich in jemanden festkrallt, lässt es nicht mehr los.",
+      "gesinnung": "Chaotisch Böse (instinktgesteuert)",
+      "ziele": ["Einen Agenten als dauerhaften Wirt nehmen"],
+      "stats": {"HP": 35, "AC": 16, "angriff": "+6 (Dimensionsriss, 2d8+3 oder Verschlingen 1d10+2, Ziel ist bewegungsunfähig bis Befreiungswurf PHYS DC 15)"}
+    },
+    {
+      "name": "AION (final)",
+      "beschreibung": "Offenbart jetzt alles – soweit die beschädigten Dateien es zulassen. Nennt zum ersten Mal den Namen der Anomalie. Kann die Schwachstelle erklären, aber nicht, wer sie gerade trägt.",
+      "gesinnung": "Neutral-hilfreich",
+      "ziele": ["Wahrheit enthüllen", "Station retten"],
+      "stats": {"HP": "n/a", "AC": "n/a", "angriff": "n/a"}
+    }
+  ],
+  "schlüssel_ereignisse": [
+    {
+      "titel": "Kael – Der Boss-Kampf",
+      "beschreibung": "Kael steht vor Terminal Gamma. Er bewegt sich, aber seine Bewegungen sind nicht seine. Er erkennt die Gruppe – oder zumindest ein Teil von ihm tut es. Kämpfen, überwältigen oder überzeugen. Jede Berührung im Kampf ist ein Risiko.",
+      "bild": null
+    },
+    {
+      "titel": "AION enthüllt die Wahrheit",
+      "beschreibung": "Nach dem Kampf – oder währenddessen, wenn jemand AION befragt: Die KI gibt endlich einen vollständigen Datensatz aus. Zum ersten Mal fällt ein Name.",
+      "bild": null,
+      "aion_enthuellung": "PROTOKOLL REKONSTRUIERT.\nBEZEICHNUNG: VEX.\nKLASSIFIZIERUNG: NEURALER PARASIT, KLASSE UNBEKANNT.\nÜBERTRAGUNGSWEG: PHYSISCHER KONTAKT.\nURSPRUNG: AETHON-RIFT, DATUM UNBEKANNT.\nSCHWACHSTELLE: VEX BENÖTIGT AKTIVEN WIRT.\nOHNE ÜBERTRAGUNG: DEAKTIVIERUNG IN 3 RUNDEN.\nEMPFEHLUNG: [DATEI BESCHÄDIGT – NICHT LESBAR]"
+    },
+    {
+      "titel": "Die Rift-Wesen kommen",
+      "beschreibung": "Durch die Wände von Sektor F dringen die Rift-Sonden ein. Der Ankerer ist hinter ihnen. Terminal Gamma muss aktiviert werden – drei Punkte, simultan. Aber jede helfende Hand könnte VEX weitergeben.",
+      "bild": "bilder/rift_wesen.jpg"
+    },
+    {
+      "titel": "Das moralische Dilemma",
+      "beschreibung": "Terminal Gamma benötigt simultane Aktivierung an drei Punkten. Die Gruppe weiß jetzt, was VEX ist und wie es reist. Die Entscheidung liegt bei ihnen.",
+      "bild": null
+    }
+  ],
+  "checkpoints": [
+    {
+      "beschreibung": "Wie löst die Gruppe das VEX-Problem?",
+      "entscheidung": "Finales Dilemma",
+      "optionen": [
+        {
+          "name": "Körperliche Isolation",
+          "beschreibung": "Jeder handelt allein, ohne physischen Kontakt. Koordination nur durch Zurufe oder vorher vereinbarte Signale.",
+          "mechanik": "Jeder Agent führt LOG DC 14 einzeln durch. Bei Misserfolg: Aktivierungspunkt schlägt fehl, nächste Runde wiederholen. VEX verhungert nach 3 Runden ohne physischen Wirtswechsel.",
+          "erfolg": "VEX stirbt. Terminal Gamma aktiviert. Station gerettet.",
+          "konsequenz": "**Ende A – Die Distanz**: *'Ihr habt euch gegenseitig gerettet, indem ihr euch nicht berührt habt. Das werden die anderen nie verstehen. Ihr auch kaum.'*"
+        },
+        {
+          "name": "Freiwilliges Opfer",
+          "beschreibung": "Ein Agent lässt alle anderen ihn nacheinander berühren – sammelt VEX in sich – isoliert sich dann. Dieser Agent ist dauerhafter Wirt.",
+          "mechanik": "Der opfernde Agent lässt sich von jedem Gruppenmitglied berühren (VEX springt auf ihn). Danach: körperliche Isolation. Andere können frei aktivieren.",
+          "erfolg": "Terminal Gamma aktiviert. Station gerettet. Der opfernde Agent lebt – aber VEX lebt in ihm.",
+          "konsequenz": "**Ende B – Der Preis**: *'Du hast das Monster eingeschlossen. In dir. Es flüstert manchmal. Du wirst lernen, es zu ignorieren. Oder es wird dich formen. Zeit wird zeigen, wer wen trägt.'*"
+        }
+      ]
+    }
+  ],
+  "fallen": [],
+  "abschlussbedingung": "Terminal Gamma aktiviert. Rift-Verbindung gesichert. VEX entweder tot (Isolation) oder eingeschlossen (Opfer).",
+  "abschlusstexte": {
+    "ende_a": "Die Kraftfelder stabilisieren sich. Der Rift zieht sich zurück.\n\nDie Rift-Wesen verschwinden durch die Wände – zurück in den Abgrund. Kael liegt auf dem Boden. Er atmet. Er ist wieder er.\n\nDie Stationsalarme verstummen einer nach dem anderen.\n\n**AION**: \"Station Nexus-7 stabilisiert. Kraftfeld: 100%. Helix-Corp wurde informiert. Evakuierungsshuttle in 6 Stunden.\"\n\n*Ihr steht in Sektor F. Kael schaut euch an. Streckt die Hand aus.*\n\n*Niemand nimmt sie.*\n\n*Nicht aus Böswilligkeit. Sondern weil ihr gerade gelernt habt, was eine ausgestreckte Hand kosten kann.*\n\n*Er lässt sie sinken. Versteht.*\n\n*Vielleicht ist das der eigentliche Preis: Dass ihr heimfahrt, und jedes Mal, wenn jemand euch die Hand hinhält, eine Sekunde zögert.*",
+    "ende_b": "Das Terminal Gamma leuchtet auf. Grün. Endlich grün.\n\nDie Rift-Wesen verschwinden. Der Ankerer stößt einen Laut aus – kein menschliches Wort für diesen Klang – und ist weg.\n\n**AION**: \"Station Nexus-7 stabilisiert. Evakuierungsshuttle in 6 Stunden.\"\n\n*Der Agent, der VEX trägt, steht allein auf der anderen Seite des Raumes. Die anderen kommen – instinktiv, wie Menschen das tun nach einem Kampf. Hände ausstrecken. Schultern berühren wollen.*\n\n*'Nicht. Bitte.'*\n\n*Zwei Worte. Alle bleiben stehen.*\n\n*Ihr fahrt heim. Als Helden, auf dem Papier. Als Menschen, die gelernt haben, dass manche Siege so aussehen wie Niederlagen, wenn man genau genug hinschaut.*"
+  }
+}
