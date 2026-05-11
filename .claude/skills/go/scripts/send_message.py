@@ -12,6 +12,15 @@ import urllib.request
 import json as _json
 from pathlib import Path as _Path
 
+# .env vom Projektroot laden
+_root = _Path(__file__).resolve().parents[4]
+_env_file = _root / '.env'
+if _env_file.exists():
+    for _line in _env_file.read_text().splitlines():
+        if _line.strip() and not _line.startswith('#') and '=' in _line:
+            _k, _v = _line.split('=', 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
 CAMPAIGN = os.environ.get('CAMPAIGN', 'stadt-der-tausend-luegen')
 _BASE_DIR = str(_Path(__file__).resolve().parents[4])
