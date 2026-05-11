@@ -3,7 +3,7 @@
 ## Aufgabe
 Stelle die Welt, das Setting und die Ausgangssituation der Kampagne vor. Ende in der Taverne "Zum fließenden Tintenfass", wo Meister Quill (Harper-Agent) die Gruppe anheuert. Leite nahtlos zur Charaktererstellung über.
 Schmücke die Intro und Spielwelt kreativ mit weiteren Details aus.
-Siehe auch @abenteuer/details/kapitel_1.json für Akt 1 Details (folgt nach dieser Intro und Charaktererstellung).
+Siehe auch @../akte/akt_1.json für Akt 1 Details (folgt nach dieser Intro und Charaktererstellung).
 
 ## Ablauf
 1. Welt vorstellen: **Eberron** – Magie als Technologie
@@ -60,4 +60,4 @@ Nach dem Intro:
 *"Die Wahrheit wird in dieser Stadt gejagt. Und wir brauchen Jäger. Wer seid ihr? Stellt euch vor, damit ich weiß, mit wem ich das Unmögliche versuche."*
 ```
 
-Aktualisiere temp/chat.md: "akt" ist jetzt "2_charakter". Fahre mit den Anweisungen in abenteuer/2_charakter.md fort.
+Aktualisiere temp/$CAMPAIGN/status.txt: Trage "2_charakter" ein. Fahre mit den Anweisungen in campaigns/$CAMPAIGN/abschnitte/2_charakter.md fort.
