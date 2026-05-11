@@ -4,6 +4,7 @@ from .anthropic_adapter import AnthropicAdapter
 from .groq_adapter import GroqAdapter
 from .mistral_adapter import MistralAdapter
 from .gemini_adapter import GeminiAdapter
+from .hub_adapter import HubAdapter
 
 
 def create_adapter(llm_id: str) -> LLMAdapter:
@@ -18,4 +19,5 @@ def create_adapter(llm_id: str) -> LLMAdapter:
         return MistralAdapter(model=llm_id)
     if llm_id.startswith("gemini-"):
         return GeminiAdapter(model=llm_id)
-    raise ValueError(f"Unknown LLM: {llm_id}")
+    # Alle anderen Modelle gehen über den AI Hub (OpenAI-kompatibel)
+    return HubAdapter(model=llm_id)
