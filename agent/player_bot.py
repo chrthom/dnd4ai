@@ -2,7 +2,7 @@
 """
 Player Bot – steuert alle LLM-Spieler-Charaktere in Discord.
 
-Startet mit: python3 bot/player_bot.py
+Startet mit: python3 agent/player_bot.py
 Benötigt: .env mit DISCORD_TOKEN, OPENAI_API_KEY, ANTHROPIC_API_KEY, CAMPAIGN
 """
 import json
