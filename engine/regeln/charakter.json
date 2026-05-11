@@ -1,0 +1,112 @@
+{
+  "schritte": [
+    {
+      "name": "Name",
+      "beschreibung": "Der Name des Charakters ist gleich dem Anzeigename des Discord-Nutzers (user.global_name oder member.nick)"
+    },
+    {
+      "name": "Rassenauswahl",
+      "beschreibung": "Spieler wählt eine Rasse. Jede Rasse hat spezielle Attribute-Boni und Fähigkeiten.",
+      "optionen": [
+        {"name": "Mensch", "boni": "+1 auf alle Attribute", "besonderheit": "Extra Sprache"},
+        {"name": "Elf", "boni": "+2 DEX, +1 INT", "besonderheit": "Dunkelsicht, Feenblut"},
+        {"name": "Dunkelelf", "boni": "+2 DEX, +1 CHA", "besonderheit": "Überlegene Dunkelsicht 60ft, Feenblut"},
+        {"name": "Zwerg", "boni": "+2 CON, +1 STR", "besonderheit": "Dunkelsicht, Zwergenresilienz"},
+        {"name": "Halbling", "boni": "+2 DEX, +1 CHA", "besonderheit": "Glück, Behände"},
+        {"name": "Halbork", "boni": "+2 STR, +1 CON", "besonderheit": "Dunkelsicht, Orksche Wut (1/Tag)"},
+        {"name": "Halbelf", "boni": "+2 CHA, +1 auf zwei Attribute", "besonderheit": "Dunkelsicht, Feenblut"},
+        {"name": "Gnom", "boni": "+2 INT, +1 CON", "besonderheit": "Gnomische List"},
+        {"name": "Drachenblütiger", "boni": "+2 STR, +1 CHA", "besonderheit": "Drachenatmung (1/Tag)"},
+        {"name": "Tiefling", "boni": "+2 CHA, +1 INT", "besonderheit": "Höllenwiderstand, Höllenblut-Zauber"}
+      ],
+      "fragen": [
+        "Welche Rasse möchtest du spielen? (1-10 oder Name)"
+      ]
+    },
+    {
+      "name": "Klassenauswahl",
+      "beschreibung": "Spieler wählt eine Klasse. Jede Klasse hat spezielle Fähigkeiten, Würfel für Trefferpunkte und Startausrüstung.",
+      "optionen": [
+        {"name": "Barbar", "trefferwürfel": "d12", "primär": ["STR", "CON"], "besonderheit": "Wut (Raserei im Kampf)"},
+        {"name": "Barde", "trefferwürfel": "d8", "primär": ["CHA", "DEX"], "besonderheit": "Inspiration, Magie"},
+        {"name": "Druide", "trefferwürfel": "d8", "primär": ["WIS", "CON"], "besonderheit": "Wildgestalt, Naturmagie"},
+        {"name": "Kleriker", "trefferwürfel": "d8", "primär": ["WIS", "STR/CON"], "besonderheit": "Göttliche Magie, Heilung"},
+        {"name": "Waldläufer", "trefferwürfel": "d10", "primär": ["DEX", "WIS"], "besonderheit": "Favored Enemy, Tierbegleiter"},
+        {"name": "Kämpfer", "trefferwürfel": "d10", "primär": ["STR", "CON"], "besonderheit": "Kampfstil, Action Surge"},
+        {"name": "Mönch", "trefferwürfel": "d8", "primär": ["DEX", "WIS"], "besonderheit": "Leerer Hand Kampf, Beweglichkeit"},
+        {"name": "Paladin", "trefferwürfel": "d10", "primär": ["STR", "CHA"], "besonderheit": "Göttlicher Sinn, Heilige Aufforderung"},
+        {"name": "Schurke", "trefferwürfel": "d8", "primär": ["DEX", "INT"], "besonderheit": "Heimlichkeit, Hinterhalt"},
+        {"name": "Zauberer", "trefferwürfel": "d6", "primär": ["INT", "CON"], "besonderheit": "Arkanes Wissen, Zaubersprüche"},
+        {"name": "Hexenmeister", "trefferwürfel": "d8", "primär": ["CHA", "CON"], "besonderheit": "Paktmagie, Eldritch Invocations"}
+      ],
+      "fragen": [
+        "Welche Klasse möchtest du spielen? (1-11 oder Name)"
+      ]
+    },
+    {
+      "name": "Attributsbestimmung (4d6 Methode)",
+      "beschreibung": "Für jedes der 6 Attribute (STR, DEX, CON, INT, WIS, CHA) wirf 4d6, der niedrigste Würfel wird gestrichen, die Summe der anderen 3 ergibt den Attributswert. Die Werte können dann den Attributen zugewiesen werden. Du würfelst für den Spieler.",
+      "methode": "4d6 drop lowest 3",
+      "beispiel": {
+        "würfe": ["4d6: [2, 4, 5, 1] → 4+5+2 = 11", "4d6: [3, 3, 6, 2] → 6+3+3 = 12"],
+        "ergebnis": "Attribute: 18, 16, 14, 12, 10, 8 (können den Attributen zugewiesen werden)"
+      }
+    },
+    {
+      "name": "Attribute zuweisen",
+      "beschreibung": "Die gewürfelten Werte werden den 6 Attributen zugewiesen. Rassen- und Klassenboni werden addiert.",
+      "attribute": ["STR", "DEX", "CON", "INT", "WIS", "CHA"],
+      "beispiel": {
+        "werte": [15, 14, 13, 12, 10, 8],
+        "rassenboni": {"Zwerg": "+2 CON, +1 STR"},
+        "endwerte": {"STR": 16, "DEX": 14, "CON": 15, "INT": 12, "WIS": 10, "CHA": 8}
+      },
+      "fragen": [
+        "Wie möchtest du die Würfe auf deine Attribute verteilen?"
+      ]
+    },
+    {
+      "name": "Fertigkeiten bestimmen",
+      "beschreibung": "Basierend auf Klasse und Rasse wählt der Spieler Fertigkeiten basierend auf dem D&D 5e Regelwerk. KI berechnet die Modifikatoren (Attributswert - 10 / 2).",
+      "beispiel": {
+        "klasse": "Waldläufer",
+        "fertigkeiten": ["Athletik", "Naturkunde", "Wahrnehmung", "Überleben", "Heimlichkeit"],
+        "modifikatoren": {"Athletik": "+3 (STR 16)", "Wahrnehmung": "+1 (WIS 12)"}
+      }
+    },
+    {
+      "name": "Ausrüstung wählen",
+      "beschreibung": "Startausrüstung basierend auf Klasse und Rasse. Du gibst die Ausrüstung vor.",
+      "beispiel": {
+        "klasse": "Kämpfer",
+        "inhalt": ["Kettenhemd", "Langschwert", "Schild", "Kurzschwert", "Abenteurerpaket"]
+      }
+    },
+    {
+      "name": "Gesinnung bestimmen",
+      "beschreibung": "Spieler wählt eine Gesinnung.",
+      "optionen": [
+        "Rechtschaffend Gut (LG)", "Neutral Gut (NG)", "Chaotisch Gut (CG)",
+        "Rechtschaffend Neutral (LN)", "Echt Neutral (N)", "Chaotisch Neutral (CN)",
+        "Rechtschaffend Böse (LE)", "Neutral Böse (NE)", "Chaotisch Böse (CE)"
+      ],
+      "fragen": [
+        "Wie ist deine Gesinnung?"
+      ]
+    }
+  ],
+  "beispiel_ablauf": {
+    "eingabe": "/charakter erstellen",
+    "dialog": [
+      "Dungeon Master: Willkommen zur Charaktererstellung Qwendor! Welche Rasse möchtest du spielen? (Mensch, Elf, Dunkelelf, Zwerg, Halbling, Halbork, ...)",
+      "Qwendor: Zwerg",
+      "Dungeon Master: Gute Wahl! Zwerge erhalten +2 CON und +1 STR. Welche Klasse? (Barbar, Kämpfer, Kleriker, ...)",
+      "Qwendor: Kämpfer",
+      "Dungeon Master: Perfekt. Jetzt würfeln wir deine Attribute mit 4d6 (höchste 3). Hier sind deine Werte: [15, 14, 13, 12, 10, 8]. Welchem Attribut möchtest du den Wert 15 zuweisen? (STR, DEX, CON, INT, WIS, CHA)",
+      "Qwendor: STR",
+      "Dungeon Master: Mit Rassenbonus: STR 17. Welchem Attribut möchtest du den Wert 15 zuweisen? (DEX, CON, INT, WIS, CHA)?",
+      "...",
+      "Dungeon Master: Hier ist dein Charakterbogen: [Markdown-Post]"
+    ]
+  }
+}

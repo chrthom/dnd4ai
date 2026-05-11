@@ -1,0 +1,42 @@
+{
+  "beschreibung": "Situationsfragen für das hybride Charakter-Setup. Echte Spieler beantworten diese Fragen via Discord – die Antworten werden als Persönlichkeitsprofil gespeichert und definieren das Verhalten des jeweiligen KI-Agenten.",
+  "anweisung_dm": "Stelle diese Fragen nacheinander für jeden Charakter. Warte auf eine Antwort vom Spieler (oder dessen Discord-Bot). Speichere die Antworten in campaigns/$CAMPAIGN/players/<name>/personality.json. Generiere danach einen llm_system_prompt_zusatz aus den Antworten.",
+  "timeout_sekunden": 120,
+  "fragen": [
+    {
+      "id": "moral_feind",
+      "text": "Stell dir vor: Dein Charakter hat einen bewusstlosen Feind vor sich. Was tut er?",
+      "beispiele": ["Ich lasse ihn liegen und ziehe weiter.", "Ich töte ihn – ein bewusstloser Feind ist trotzdem ein Feind.", "Ich versuche ihn zu befragen, bevor ich entscheide."],
+      "dimensionen": ["Moral", "Pragmatismus"],
+      "system_prompt_mapping": "Umgang mit unterlegenen Gegnern: {antwort}"
+    },
+    {
+      "id": "gruppe_vs_individuum",
+      "text": "Die Gruppe muss fliehen, aber ein Mitglied ist verletzt und kommt kaum voran. Was tut dein Charakter?",
+      "beispiele": ["Ich bleibe zurück und kämpfe, damit die anderen entkommen.", "Ich helfe dem Verletzten – wir schaffen das zusammen oder gar nicht.", "Ich mache eine schnelle Kalkulation: Kann ich ihn tragen?"],
+      "dimensionen": ["Loyalität", "Selbsterhaltung"],
+      "system_prompt_mapping": "Verhalten in Gruppe vs. Eigensicherung: {antwort}"
+    },
+    {
+      "id": "info_vs_ehrlichkeit",
+      "text": "Ein NPC vertraut deinem Charakter. Du könntest lügen, um an wichtige Informationen zu kommen. Tust du es?",
+      "beispiele": ["Ja, wenn es der Mission dient.", "Nein – Vertrauen ist der einzige echte Vorteil, den wir haben.", "Kommt darauf an, wie schlimm die Konsequenz der Lüge ist."],
+      "dimensionen": ["Ehrlichkeit", "Effizienz"],
+      "system_prompt_mapping": "Ehrlichkeit vs. taktische Täuschung: {antwort}"
+    },
+    {
+      "id": "risiko_mut",
+      "text": "Der Eingang zu Tusks Versteck ist gesichert. Du hast drei Optionen: Offen angreifen (riskant), schleichen (langsam) oder verhandeln (unsicher). Was wählt dein Charakter?",
+      "beispiele": ["Angreifen – ich bin für direkten Kampf ausgerüstet.", "Schleichen – Überraschung ist der beste Vorteil.", "Verhandeln – Ich sehe, ob ich an Informationen komme, bevor ich handele."],
+      "dimensionen": ["Risikotoleranz", "Kampfstil"],
+      "system_prompt_mapping": "Bevorzugter Ansatz bei unbekannten Risiken: {antwort}"
+    },
+    {
+      "id": "ressourcen_moral",
+      "text": "Dein Charakter findet einen Beutel Gold in einer verlassenen Harper-Lagerstätte – er gehört einer Fraktion, die euch geholfen hat. Was tut er?",
+      "beispiele": ["Ich nehme ihn – wir brauchen Ressourcen.", "Ich lasse ihn. Das Gold gehört nicht mir.", "Ich nehme ihn, aber notiere es und gebe es zurück, wenn möglich."],
+      "dimensionen": ["Integrität", "Pragmatismus"],
+      "system_prompt_mapping": "Umgang mit fremden Ressourcen und Vertrauen: {antwort}"
+    }
+  ]
+}

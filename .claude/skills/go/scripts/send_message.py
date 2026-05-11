@@ -9,8 +9,16 @@ import sys
 import json
 import urllib.request
 
+import json as _json
+from pathlib import Path as _Path
+
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
-CHANNEL_ID = '1502281677660225546'
+CAMPAIGN = os.environ.get('CAMPAIGN', 'stadt-der-tausend-luegen')
+_BASE_DIR = str(_Path(__file__).resolve().parents[4])
+_config_path = os.path.join(_BASE_DIR, 'campaigns', CAMPAIGN, 'config.json')
+with open(_config_path) as _f:
+    _config = _json.load(_f)
+CHANNEL_ID = _config['discord_channel_id']
 
 content = sys.stdin.read().rstrip('\n')
 
