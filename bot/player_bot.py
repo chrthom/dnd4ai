@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from llm import create_adapter
-from discord_webhook import post as webhook_post
+from discord_bot import send_message
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 CAMPAIGN = os.environ.get("CAMPAIGN", "stadt-der-tausend-luegen")
@@ -208,10 +208,11 @@ def run():
                     for s in spieler:
                         charakter = s["charakter"]
                         bot_name = s.get("bot_discord_name", charakter)
-                        webhook_url = s.get("webhook_url", "")
+                        token_env = s.get("discord_token_env", "")
+                        bot_token = os.environ.get(token_env, "") if token_env else ""
                         adapter = adapters.get(charakter)
 
-                        if not adapter or not webhook_url:
+                        if not adapter or not bot_token:
                             continue
                         if not should_respond(charakter, bot_name, content):
                             continue
@@ -226,7 +227,7 @@ def run():
                         print(f"[{charakter}] antwortet auf: {content[:60]}...")
                         try:
                             response = adapter.complete(system_prompt, messages)
-                            webhook_post(webhook_url, bot_name, response)
+                            send_message(bot_token, channel_id, response)
                             print(f"[{charakter}] → {response[:80]}...")
                         except Exception as e:
                             print(f"[{charakter}] Fehler: {e}", file=sys.stderr)
