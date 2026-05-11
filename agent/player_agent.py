@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Player Bot – steuert alle LLM-Spieler-Charaktere in Discord.
+Player Agent – steuert alle LLM-Spieler-Charaktere in Discord.
 
 Startet mit: python3 agent/player_agent.py
-Benötigt: .env mit DISCORD_TOKEN, OPENAI_API_KEY, ANTHROPIC_API_KEY, CAMPAIGN
+Benötigt: .env mit DISCORD_TOKEN, DISCORD_TOKEN_<CHARAKTER>, LLM_PROVIDER,
+          LLM_MODEL_<CHARAKTER>, AI_HUB_URL/AI_HUB_TOKEN oder Anbieter-Keys
 """
 import json
 import os
@@ -15,7 +16,8 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+# .env immer relativ zum Projektroot laden, egal von wo gestartet wird
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 from llm import create_adapter
 from discord_agent import send_message
