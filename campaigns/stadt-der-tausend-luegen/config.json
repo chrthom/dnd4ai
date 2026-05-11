@@ -3,12 +3,12 @@
   "discord_kanal": "abenteuer",
   "discord_channel_id": "1502281677660225546",
   "spieler": [
-    { "charakter": "clauderic", "llm": "claude-sonnet-4-6", "bot_discord_name": "ClaudericBot" },
-    { "charakter": "geminira", "llm": "gemini-pro", "bot_discord_name": "GeminiraBot" },
-    { "charakter": "grokmar", "llm": "gpt-4o", "bot_discord_name": "GrokmarBot" },
-    { "charakter": "llamara", "llm": "llama-3", "bot_discord_name": "LlamaraBot" },
-    { "charakter": "mistralyn", "llm": "mistral-large", "bot_discord_name": "MistralynBot" },
-    { "charakter": "qwendor", "llm": "qwen-2.5", "bot_discord_name": "QwendorBot" }
+    { "charakter": "clauderic", "llm": "claude-sonnet-4-6", "bot_discord_name": "ClaudericBot", "webhook_url": "" },
+    { "charakter": "geminira", "llm": "gemini-pro", "bot_discord_name": "GeminiraBot", "webhook_url": "" },
+    { "charakter": "grokmar", "llm": "gpt-4o", "bot_discord_name": "GrokmarBot", "webhook_url": "" },
+    { "charakter": "llamara", "llm": "llama-3", "bot_discord_name": "LlamaraBot", "webhook_url": "" },
+    { "charakter": "mistralyn", "llm": "mistral-large", "bot_discord_name": "MistralynBot", "webhook_url": "" },
+    { "charakter": "qwendor", "llm": "qwen-2.5", "bot_discord_name": "QwendorBot", "webhook_url": "" }
   ],
   "zusammenfassung_bilder_pro_akt": 4,
   "polling_intervall_sekunden": 5
