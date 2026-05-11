@@ -87,11 +87,36 @@ def load_memory(charakter: str) -> str:
         return path.read_text().strip()
     return ""
 
+def load_skills(charakter: str) -> list[str]:
+    """Liest alle .md-Dateien aus players/<charakter>/skills/ ein."""
+    skills_dir = BASE_DIR / "campaigns" / CAMPAIGN / "players" / charakter / "skills"
+    if not skills_dir.exists():
+        return []
+    return [
+        f.read_text().strip()
+        for f in sorted(skills_dir.glob("*.md"))
+        if f.is_file()
+    ]
+
 def build_system_prompt(charakter: str, personality: dict) -> str:
     bogen = load_charakterbogen(charakter)
     memory = load_memory(charakter)
+    skills = load_skills(charakter)
     prinzipien = "\n".join(f"- {p}" for p in personality.get("spielprinzipien", []))
     zusatz = personality.get("llm_system_prompt_zusatz", "")
+
+    # situation_antworten als Beispiel-Dialog aufbereiten
+    situationen = personality.get("situation_antworten", [])
+    situation_text = ""
+    if situationen:
+        lines = []
+        for s in situationen:
+            frage = s.get("frage", "")
+            antwort = s.get("antwort", "")
+            if frage and antwort:
+                lines.append(f"Frage: {frage}\nDeine Antwort: {antwort}")
+        if lines:
+            situation_text = "\n\n".join(lines)
 
     parts = [
         f"Du spielst den Charakter **{charakter}** in einer D&D 5e Kampagne namens '{CAMPAIGN}'.",
@@ -99,13 +124,17 @@ def build_system_prompt(charakter: str, personality: dict) -> str:
         "Halte dich an die Spielmechanik und reagiere auf die letzte Nachricht des Dungeon Masters.",
     ]
     if bogen:
-        parts.append(f"\n## Dein Charakterbogen\n{bogen}")
+        parts.append(f"## Dein Charakterbogen\n{bogen}")
     if prinzipien:
-        parts.append(f"\n## Deine Spielprinzipien\n{prinzipien}")
+        parts.append(f"## Deine Spielprinzipien\n{prinzipien}")
+    if situation_text:
+        parts.append(f"## Wie du in Situationen reagierst\n{situation_text}")
+    if skills:
+        parts.append("## Deine Sonderfähigkeiten\n" + "\n\n---\n\n".join(skills))
     if memory:
-        parts.append(f"\n## Deine Erinnerungen\n{memory}")
+        parts.append(f"## Deine Erinnerungen\n{memory}")
     if zusatz:
-        parts.append(f"\n## Zusätzliche Hinweise\n{zusatz}")
+        parts.append(f"## Zusätzliche Hinweise\n{zusatz}")
 
     return "\n\n".join(parts)
 
@@ -146,9 +175,7 @@ def run():
         print("Keine Spieler in config.json konfiguriert.", file=sys.stderr)
         sys.exit(1)
 
-    # Adapter und letzte Antwortzeit pro Charakter initialisieren
     adapters = {}
-    last_response_ts: dict[str, str | None] = {}
     for s in spieler:
         charakter = s["charakter"]
         llm_id = s.get("llm", "")
@@ -156,14 +183,12 @@ def run():
             continue
         try:
             adapters[charakter] = create_adapter(llm_id)
-            last_response_ts[charakter] = None
             print(f"  ✓ {charakter} → {llm_id}")
         except ValueError as e:
             print(f"  ✗ {charakter}: {e}", file=sys.stderr)
 
     print(f"\nPlayer-Bot gestartet. Kampagne: {CAMPAIGN}. Polling alle {POLL_INTERVAL}s.\n")
 
-    # Globaler Zeitstempel: letzte verarbeitete Nachricht
     last_seen_ts = datetime.now(timezone.utc).isoformat()
 
     while True:
@@ -177,7 +202,6 @@ def run():
                     content = msg.get("content", "")
                     author = (msg.get("author") or {}).get("username", "")
 
-                    # Keine Bot-Nachrichten verarbeiten
                     if msg.get("author", {}).get("bot"):
                         continue
 
@@ -195,10 +219,8 @@ def run():
                         personality = load_personality(charakter)
                         system_prompt = build_system_prompt(charakter, personality)
 
-                        # Kontext aus bisherigen Nachrichten
                         context_msgs = fetch_messages(channel_id, None)[-20:]
                         messages = build_messages(context_msgs, charakter)
-                        # Aktuelle Nachricht anhängen falls nicht schon drin
                         messages.append({"role": "user", "content": f"{author}: {content}"})
 
                         print(f"[{charakter}] antwortet auf: {content[:60]}...")
