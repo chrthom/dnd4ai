@@ -8,6 +8,7 @@ Benötigt: .env mit DISCORD_TOKEN, DISCORD_TOKEN_<CHARAKTER>, LLM_PROVIDER,
 """
 import json
 import os
+import signal
 import sys
 import time
 from datetime import datetime, timezone
@@ -18,6 +19,30 @@ from dotenv import load_dotenv
 
 # .env immer relativ zum Projektroot laden, egal von wo gestartet wird
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+
+# Safeguard: nur eine Instanz erlaubt
+_LOCKFILE = Path("/tmp/player_agent.lock")
+try:
+    if _LOCKFILE.exists():
+        old_pid = int(_LOCKFILE.read_text().strip())
+        try:
+            os.kill(old_pid, signal.SIGTERM)
+            time.sleep(1)
+            print(f"Alte Instanz (PID {old_pid}) beendet.")
+        except ProcessLookupError:
+            pass
+    _LOCKFILE.write_text(str(os.getpid()))
+except Exception:
+    pass
+
+def _cleanup_lock():
+    try:
+        _LOCKFILE.unlink(missing_ok=True)
+    except Exception:
+        pass
+
+import atexit
+atexit.register(_cleanup_lock)
 
 from llm import create_adapter
 from discord_agent import send_message
@@ -206,8 +231,8 @@ def run():
                     content = msg.get("content", "")
                     author = (msg.get("author") or {}).get("username", "")
 
-                    if msg.get("author", {}).get("bot"):
-                        continue
+                    # Kontext einmal abrufen für alle Charaktere
+                    context_msgs = new_msgs[-20:]
 
                     for s in spieler:
                         charakter = s["charakter"]
@@ -216,7 +241,15 @@ def run():
                         agent_token = os.environ.get(token_env, "") if token_env else ""
                         adapter = adapters.get(charakter)
 
-                        if not adapter or not agent_token:
+                        if not adapter:
+                            continue
+                        # Fallback auf DM-Token wenn kein eigener Bot-Token gesetzt
+                        effective_token = agent_token if agent_token else DISCORD_TOKEN
+                        use_prefix = not agent_token  # prefix nur wenn Fallback
+                        if agent_name.lower() == author.lower():
+                            continue  # eigene Nachrichten ignorieren
+                        # Eigene Fallback-Nachrichten ignorieren (DM-Token mit Prefix)
+                        if content.startswith(f"**[{charakter.capitalize()}]**"):
                             continue
                         if not should_respond(charakter, agent_name, content):
                             continue
@@ -224,19 +257,35 @@ def run():
                         personality = load_personality(charakter)
                         system_prompt = build_system_prompt(charakter, personality)
 
-                        context_msgs = fetch_messages(channel_id, None)[-20:]
                         messages = build_messages(context_msgs, charakter)
                         messages.append({"role": "user", "content": f"{author}: {content}"})
 
                         print(f"[{charakter}] antwortet auf: {content[:60]}...")
                         try:
                             response = adapter.complete(system_prompt, messages)
-                            send_message(agent_token, channel_id, response)
+                            prefixed = f"**[{charakter.capitalize()}]** {response}"
+                            try:
+                                if use_prefix:
+                                    send_message(DISCORD_TOKEN, channel_id, prefixed)
+                                else:
+                                    send_message(effective_token, channel_id, response)
+                            except RuntimeError as e:
+                                if "401" in str(e):
+                                    print(f"[{charakter}] Token ungültig, Fallback auf DM-Token", file=sys.stderr)
+                                    send_message(DISCORD_TOKEN, channel_id, prefixed)
+                                else:
+                                    raise
                             print(f"[{charakter}] → {response[:80]}...")
                         except Exception as e:
                             print(f"[{charakter}] Fehler: {e}", file=sys.stderr)
+                        time.sleep(1)  # Rate-Limit-Schutz zwischen Charakteren
 
         except Exception as e:
+            msg = str(e)
+            if "429" in msg:
+                print("Rate limit – warte 30s...", file=sys.stderr)
+                time.sleep(30)
+                continue
             print(f"Polling-Fehler: {e}", file=sys.stderr)
 
         time.sleep(POLL_INTERVAL)
