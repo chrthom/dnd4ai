@@ -178,17 +178,22 @@ def should_respond(charakter: str, agent_name: str, message_content: str) -> boo
 
 # --- Nachrichten-History für LLM ---
 
-def build_messages(recent_msgs: list[dict], charakter: str) -> list[dict]:
+def build_messages(recent_msgs: list[dict], charakter: str, agent_name: str) -> list[dict]:
     """Baut die message-History für den LLM aus den letzten Discord-Nachrichten."""
+    prefix = f"**[{charakter.capitalize()}]**"
     result = []
-    for msg in recent_msgs[-20:]:  # max. 20 Nachrichten Kontext
+    for msg in recent_msgs[-20:]:
         author = (msg.get("author") or {}).get("username", "")
         content = msg.get("content", "").strip()
         if not content:
             continue
-        # Eigene Nachrichten als "assistant", alle anderen als "user"
-        role = "assistant" if author.lower() == charakter.lower() else "user"
-        result.append({"role": role, "content": f"{author}: {content}"})
+        # Eigene Nachrichten erkennen: via Bot-Username oder Fallback-Prefix
+        is_own = author.lower() == agent_name.lower() or content.startswith(prefix)
+        role = "assistant" if is_own else "user"
+        # Prefix aus eigenem Text entfernen für sauberen Kontext
+        if is_own and content.startswith(prefix):
+            content = content[len(prefix):].strip()
+        result.append({"role": role, "content": content if is_own else f"{author}: {content}"})
     return result
 
 # --- Hauptloop ---
@@ -229,59 +234,65 @@ def run():
 
             if new_msgs:
                 last_seen_ts = new_msgs[-1]["timestamp"]
+                context_msgs = new_msgs[-20:]
 
-                for msg in new_msgs:
-                    content = msg.get("content", "")
-                    author = (msg.get("author") or {}).get("username", "")
+                # Pro Charakter: genau eine Antwort auf die letzte relevante Nachricht
+                for s in spieler:
+                    charakter = s["charakter"]
+                    agent_name = s.get("agent_discord_name", charakter)
+                    token_env = s.get("discord_token_env", "")
+                    agent_token = os.environ.get(token_env, "") if token_env else ""
+                    adapter = adapters.get(charakter)
 
-                    # Kontext einmal abrufen für alle Charaktere
-                    context_msgs = new_msgs[-20:]
+                    if not adapter:
+                        continue
 
-                    for s in spieler:
-                        charakter = s["charakter"]
-                        agent_name = s.get("agent_discord_name", charakter)
-                        token_env = s.get("discord_token_env", "")
-                        agent_token = os.environ.get(token_env, "") if token_env else ""
-                        adapter = adapters.get(charakter)
+                    prefix = f"**[{charakter.capitalize()}]**"
 
-                        if not adapter:
-                            continue
-                        # Fallback auf DM-Token wenn kein eigener Bot-Token gesetzt
-                        effective_token = agent_token if agent_token else DISCORD_TOKEN
-                        use_prefix = not agent_token  # prefix nur wenn Fallback
+                    # Letzte Nachricht suchen, die diesen Charakter triggert
+                    trigger_msg = None
+                    for msg in reversed(new_msgs):
+                        author = (msg.get("author") or {}).get("username", "")
+                        content = msg.get("content", "").strip()
                         if agent_name.lower() == author.lower():
-                            continue  # eigene Nachrichten ignorieren
-                        # Eigene Fallback-Nachrichten ignorieren (DM-Token mit Prefix)
-                        if content.startswith(f"**[{charakter.capitalize()}]**"):
                             continue
-                        if not should_respond(charakter, agent_name, content):
+                        if content.startswith(prefix):
                             continue
+                        if should_respond(charakter, agent_name, content):
+                            trigger_msg = msg
+                            break
 
-                        personality = load_personality(charakter)
-                        system_prompt = build_system_prompt(charakter, personality)
+                    if not trigger_msg:
+                        continue
 
-                        messages = build_messages(context_msgs, charakter)
-                        messages.append({"role": "user", "content": f"{author}: {content}"})
+                    trigger_content = trigger_msg.get("content", "")
+                    trigger_author = (trigger_msg.get("author") or {}).get("username", "")
 
-                        print(f"[{charakter}] antwortet auf: {content[:60]}...")
+                    use_prefix = not agent_token
+                    personality = load_personality(charakter)
+                    system_prompt = build_system_prompt(charakter, personality)
+                    messages = build_messages(context_msgs, charakter, agent_name)
+                    messages.append({"role": "user", "content": f"{trigger_author}: {trigger_content}"})
+
+                    print(f"[{charakter}] antwortet auf: {trigger_content[:60]}...")
+                    try:
+                        response = adapter.complete(system_prompt, messages)
+                        prefixed = f"{prefix} {response}"
                         try:
-                            response = adapter.complete(system_prompt, messages)
-                            prefixed = f"**[{charakter.capitalize()}]** {response}"
-                            try:
-                                if use_prefix:
-                                    send_message(DISCORD_TOKEN, channel_id, prefixed)
-                                else:
-                                    send_message(effective_token, channel_id, response)
-                            except RuntimeError as e:
-                                if "401" in str(e):
-                                    print(f"[{charakter}] Token ungültig, Fallback auf DM-Token", file=sys.stderr)
-                                    send_message(DISCORD_TOKEN, channel_id, prefixed)
-                                else:
-                                    raise
-                            print(f"[{charakter}] → {response[:80]}...")
-                        except Exception as e:
-                            print(f"[{charakter}] Fehler: {e}", file=sys.stderr)
-                        time.sleep(1)  # Rate-Limit-Schutz zwischen Charakteren
+                            if use_prefix:
+                                send_message(DISCORD_TOKEN, channel_id, prefixed)
+                            else:
+                                send_message(agent_token, channel_id, response)
+                        except RuntimeError as e:
+                            if "401" in str(e):
+                                print(f"[{charakter}] Token ungültig, Fallback auf DM-Token", file=sys.stderr)
+                                send_message(DISCORD_TOKEN, channel_id, prefixed)
+                            else:
+                                raise
+                        print(f"[{charakter}] → {response[:80]}...")
+                    except Exception as e:
+                        print(f"[{charakter}] Fehler: {e}", file=sys.stderr)
+                    time.sleep(1)  # Rate-Limit-Schutz zwischen Charakteren
 
         except Exception as e:
             msg = str(e)
