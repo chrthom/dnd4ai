@@ -10,6 +10,8 @@
     { "charakter": "mistralyn", "agent_discord_name": "MistralynBot" },
     { "charakter": "qwendor", "agent_discord_name": "QwendorBot" }
   ],
+  "active_spieler": ["grokmar", "qwendor"],
+  "dm_discord_name": "Game Master AI",
   "zusammenfassung_bilder_pro_akt": 4,
   "polling_intervall_sekunden": 5
 }
