@@ -211,8 +211,11 @@ def run():
             print(f"  ✗ {charakter}: {env_key} nicht gesetzt", file=sys.stderr)
             continue
         try:
-            adapters[charakter] = create_adapter(llm_id)
-            print(f"  ✓ {charakter} → {llm_id}")
+            # Per-Charakter Provider: LLM_PROVIDER_GEMINIRA=hub, sonst globaler LLM_PROVIDER
+            per_bot_provider = os.environ.get(f"LLM_PROVIDER_{charakter.upper()}")
+            adapters[charakter] = create_adapter(llm_id, provider=per_bot_provider)
+            provider_label = per_bot_provider or os.environ.get("LLM_PROVIDER", "hub")
+            print(f"  ✓ {charakter} → {llm_id} [{provider_label}]")
         except ValueError as e:
             print(f"  ✗ {charakter}: {e}", file=sys.stderr)
 

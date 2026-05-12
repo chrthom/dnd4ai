@@ -3,9 +3,12 @@ import os
 from .base import LLMAdapter
 
 
-def create_adapter(llm_id: str) -> LLMAdapter:
-    """Factory: erstellt den passenden Adapter abhängig von LLM_PROVIDER."""
-    provider = os.environ.get("LLM_PROVIDER", "hub").lower()
+def create_adapter(llm_id: str, provider: str | None = None) -> LLMAdapter:
+    """Factory: erstellt den passenden Adapter.
+
+    provider: 'hub' | 'direct' | None (dann LLM_PROVIDER env var, Default: hub)
+    """
+    provider = (provider or os.environ.get("LLM_PROVIDER", "hub")).lower()
 
     if provider == "hub":
         from .hub_adapter import HubAdapter
