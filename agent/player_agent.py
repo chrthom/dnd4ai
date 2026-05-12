@@ -167,7 +167,11 @@ def build_system_prompt(charakter: str, personality: dict) -> str:
 
 # --- Triggererkennung ---
 
-GROUP_TRIGGERS = ["was tut die gruppe", "wer möchte handeln", "was macht ihr"]
+GROUP_TRIGGERS = [
+    "was tut die gruppe", "wer möchte handeln", "was macht ihr",
+    "wer seid ihr", "stellt euch vor", "was wollt ihr", "wie reagiert",
+    "was tut ihr", "entscheidet euch", "eure entscheidung",
+]
 
 def should_respond(charakter: str, agent_name: str, message_content: str) -> bool:
     """Prüft ob dieser Charakter auf die Nachricht reagieren soll."""
