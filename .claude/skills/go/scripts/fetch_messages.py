@@ -12,12 +12,28 @@ import requests
 from datetime import datetime, timezone
 from pathlib import Path
 
+# .env vom Projektroot laden
+_root = Path(__file__).resolve().parents[4]
+_env_file = _root / '.env'
+if _env_file.exists():
+    for _line in _env_file.read_text().splitlines():
+        if _line.strip() and not _line.startswith('#') and '=' in _line:
+            _k, _v = _line.split('=', 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 DISCORD_TOKEN = os.environ['DISCORD_TOKEN']
-CHANNEL_ID = '1502281677660225546'
+CAMPAIGN = os.environ.get('CAMPAIGN', 'stadt-der-tausend-luegen')
 # Projekt-Stammverzeichnis dynamisch ermitteln:
 # Skript liegt unter <root>/.claude/skills/go/scripts/fetch_messages.py
 BASE_DIR = str(Path(__file__).resolve().parents[4])
-CHAT_DIR = f'{BASE_DIR}/temp'
+
+import json as _json
+_config_path = os.path.join(BASE_DIR, 'campaigns', CAMPAIGN, 'config.json')
+with open(_config_path) as _f:
+    _config = _json.load(_f)
+CHANNEL_ID = _config['discord_channel_id']
+
+CHAT_DIR = os.path.join(BASE_DIR, 'temp', CAMPAIGN)
 
 
 def get_last_timestamp():
