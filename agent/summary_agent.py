@@ -10,6 +10,7 @@ import io
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 import requests
@@ -23,7 +24,8 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 CAMPAIGN = os.environ.get("CAMPAIGN", "stadt-der-tausend-luegen")
 DISCORD_TOKEN = os.environ["DISCORD_TOKEN"]
 IMAGE_MODEL = os.environ.get("IMAGE_MODEL", "dall-e-3")
-IMAGE_PROVIDER = os.environ.get("IMAGE_PROVIDER", "openai")  # openai | hub
+# Komma-separierte Liste, in Reihenfolge versucht: pollinations | hub | openai
+IMAGE_PROVIDER = os.environ.get("IMAGE_PROVIDER", "pollinations,hub,openai")
 
 _config_path = BASE_DIR / "campaigns" / CAMPAIGN / "config.json"
 with open(_config_path) as f:
@@ -89,8 +91,18 @@ def generate_summary_text(akt: dict) -> str:
     if not zusammenfassung:
         return f"*(Keine Zusammenfassung für {akt['titel']} gefunden)*"
 
-    llm_id = os.environ.get("LLM_MODEL_GEMINIRA", "claude-sonnet-4-6")
-    adapter = create_adapter(llm_id)
+    # SUMMARY_MODEL / SUMMARY_PROVIDER haben Vorrang, dann Geminira's Config, dann globale
+    llm_id = (
+        os.environ.get("SUMMARY_MODEL")
+        or os.environ.get("LLM_MODEL_GEMINIRA")
+        or "claude-sonnet-4-6"
+    )
+    provider = (
+        os.environ.get("SUMMARY_PROVIDER")
+        or os.environ.get("LLM_PROVIDER_GEMINIRA")
+        or os.environ.get("LLM_PROVIDER", "hub")
+    )
+    adapter = create_adapter(llm_id, provider=provider)
 
     system = (
         "Du bist ein epischer Geschichtenerzähler für D&D-Kampagnen. "
@@ -110,52 +122,94 @@ def generate_summary_text(akt: dict) -> str:
     return adapter.complete(system, messages)
 
 
-def generate_image(prompt: str) -> bytes | None:
-    """Generiert ein Bild via DALL-E oder AI Hub. Versucht Hub zuerst, dann OpenAI als Fallback."""
-    providers = []
-    if IMAGE_PROVIDER == "hub" or os.environ.get("AI_HUB_TOKEN"):
-        providers.append(("hub", os.environ.get("AI_HUB_TOKEN", ""), f"{os.environ.get('AI_HUB_URL','').rstrip('/')}/images/generations"))
-    if os.environ.get("OPENAI_API_KEY"):
-        providers.append(("openai", os.environ.get("OPENAI_API_KEY", ""), "https://api.openai.com/v1/images/generations"))
-
-    if not providers:
-        print("  ✗ Kein Image-API-Key gesetzt (AI_HUB_TOKEN oder OPENAI_API_KEY)", file=sys.stderr)
+def _generate_via_pollinations(prompt: str) -> bytes | None:
+    """Kostenlose Bildgenerierung via Pollinations.ai – kein API-Key nötig."""
+    import urllib.parse
+    encoded = urllib.parse.quote(prompt)
+    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&nologo=true"
+    try:
+        resp = requests.get(url, timeout=120)
+        resp.raise_for_status()
+        return resp.content
+    except Exception as e:
+        print(f"  ✗ pollinations: {e}", file=sys.stderr)
         return None
 
-    for provider_name, api_key, url in providers:
-        try:
-            resp = requests.post(
-                url,
-                json={"model": IMAGE_MODEL, "prompt": prompt, "n": 1, "size": "1024x1024"},
-                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-                timeout=60,
-            )
-            if resp.status_code == 400 and "budget" in resp.text.lower():
-                print(f"  ✗ {provider_name}: Budget überschritten – versuche nächsten Provider", file=sys.stderr)
-                continue
-            resp.raise_for_status()
-            image_url = resp.json()["data"][0]["url"]
-            img_resp = requests.get(image_url, timeout=30)
-            img_resp.raise_for_status()
-            return img_resp.content
-        except Exception as e:
-            print(f"  ✗ {provider_name}: {e}", file=sys.stderr)
-            continue
 
+def _generate_via_openai_compatible(prompt: str, api_key: str, url: str, provider_name: str) -> bytes | None:
+    try:
+        resp = requests.post(
+            url,
+            json={"model": IMAGE_MODEL, "prompt": prompt, "n": 1, "size": "1024x1024"},
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            timeout=60,
+        )
+        if resp.status_code == 400 and "budget" in resp.text.lower():
+            print(f"  ✗ {provider_name}: Budget überschritten", file=sys.stderr)
+            return None
+        resp.raise_for_status()
+        image_url = resp.json()["data"][0]["url"]
+        img_resp = requests.get(image_url, timeout=30)
+        img_resp.raise_for_status()
+        return img_resp.content
+    except Exception as e:
+        print(f"  ✗ {provider_name}: {e}", file=sys.stderr)
+        return None
+
+
+def generate_image(prompt: str) -> bytes | None:
+    """Generiert ein Bild. Provider-Reihenfolge per IMAGE_PROVIDER steuerbar.
+
+    pollinations → kostenlos, kein Key (Default)
+    hub          → adesso AI Hub (DALL-E)
+    openai       → OpenAI direkt (DALL-E)
+    """
+    order = [p.strip() for p in IMAGE_PROVIDER.split(",")]
+
+    for provider_name in order:
+        if provider_name == "pollinations":
+            result = _generate_via_pollinations(prompt)
+        elif provider_name == "hub" and os.environ.get("AI_HUB_TOKEN"):
+            result = _generate_via_openai_compatible(
+                prompt,
+                os.environ.get("AI_HUB_TOKEN", ""),
+                f"{os.environ.get('AI_HUB_URL','').rstrip('/')}/images/generations",
+                "hub",
+            )
+        elif provider_name == "openai" and os.environ.get("OPENAI_API_KEY"):
+            result = _generate_via_openai_compatible(
+                prompt,
+                os.environ.get("OPENAI_API_KEY", ""),
+                "https://api.openai.com/v1/images/generations",
+                "openai",
+            )
+        else:
+            continue
+        if result:
+            return result
     return None
 
 
 def post_text(content: str) -> None:
     """Postet Text in den Discord-Kanal."""
-    # Splitten bei 2000-Zeichen-Limit
     chunks = [content[i:i+2000] for i in range(0, len(content), 2000)]
     for chunk in chunks:
-        resp = requests.post(
-            f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages",
-            json={"content": chunk},
-            headers={"Authorization": f"Bot {DISCORD_TOKEN}"},
-        )
-        resp.raise_for_status()
+        payload = {"content": chunk}
+        for attempt in range(3):
+            resp = requests.post(
+                f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages",
+                json=payload,
+                headers={"Authorization": f"Bot {DISCORD_TOKEN}"},
+            )
+            if resp.status_code == 429:
+                retry_after = resp.json().get("retry_after", 1)
+                time.sleep(retry_after + 0.5)
+                continue
+            if not resp.ok:
+                print(f"  ✗ post_text Fehler {resp.status_code}: {resp.text[:200]}", file=sys.stderr)
+                resp.raise_for_status()
+            break
+        time.sleep(0.5)  # Rate-Limit-Schutz
 
 
 def post_image(image_bytes: bytes, caption: str, filename: str = "bild.png") -> None:
@@ -183,8 +237,14 @@ def run():
 
         # Textzusammenfassung
         print("  Generiere Textzusammenfassung...")
-        summary = generate_summary_text(akt)
-        post_text(f"## Akt {akt['nr']}: {akt['titel']}\n\n{summary}")
+        try:
+            summary = generate_summary_text(akt)
+            print(f"  ✓ Text generiert ({len(summary)} Zeichen)")
+        except Exception as e:
+            print(f"  ✗ Textgenerierung fehlgeschlagen: {e}", file=sys.stderr)
+            summary = f"*(Zusammenfassung konnte nicht generiert werden: {e})*"
+        post_text(f"## Akt {akt['nr']}: {akt['titel']}")
+        post_text(summary)
 
         # Bilder
         for i, prompt in enumerate(akt["bild_prompts"], 1):
@@ -201,6 +261,7 @@ def run():
                 print(f"  ✗ Bild {i} übersprungen")
 
         post_text("---")
+        time.sleep(3)  # Pause zwischen Akten für Rate-Limits
 
     post_text(
         "*\"Die Stadt der tausend Lügen blieb – doch ihr wisst, wer die Wahrheit spricht.*\n"

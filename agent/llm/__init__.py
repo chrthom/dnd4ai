@@ -6,9 +6,13 @@ from .base import LLMAdapter
 def create_adapter(llm_id: str, provider: str | None = None) -> LLMAdapter:
     """Factory: erstellt den passenden Adapter.
 
-    provider: 'hub' | 'direct' | None (dann LLM_PROVIDER env var, Default: hub)
+    provider: 'hub' | 'direct' | 'pollinations' | None
     """
     provider = (provider or os.environ.get("LLM_PROVIDER", "hub")).lower()
+
+    if provider == "pollinations":
+        from .pollinations_adapter import PollinationsAdapter
+        return PollinationsAdapter(model=llm_id)
 
     if provider == "hub":
         from .hub_adapter import HubAdapter
