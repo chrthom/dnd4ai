@@ -231,6 +231,8 @@ def run():
     print(f"\nPlayer-Bot gestartet. Kampagne: {CAMPAIGN}. Polling alle {POLL_INTERVAL}s.\n")
 
     last_seen_ts = datetime.now(timezone.utc).isoformat()
+    # Letzte Message-ID, auf die jeder Charakter bereits geantwortet hat
+    last_responded_id: dict[str, str] = {}
 
     while True:
         try:
@@ -269,6 +271,12 @@ def run():
                     if not trigger_msg:
                         continue
 
+                    # Doppelte Antwort verhindern: bereits auf diese Message geantwortet?
+                    trigger_id = trigger_msg.get("id", "")
+                    if trigger_id and last_responded_id.get(charakter) == trigger_id:
+                        continue
+
+
                     trigger_content = trigger_msg.get("content", "")
                     trigger_author = (trigger_msg.get("author") or {}).get("username", "")
 
@@ -293,6 +301,9 @@ def run():
                                 send_message(DISCORD_TOKEN, channel_id, prefixed)
                             else:
                                 raise
+                        # Message-ID merken, damit keine Doppelantwort folgt
+                        if trigger_id:
+                            last_responded_id[charakter] = trigger_id
                         print(f"[{charakter}] → {response[:80]}...")
                     except Exception as e:
                         print(f"[{charakter}] Fehler: {e}", file=sys.stderr)
