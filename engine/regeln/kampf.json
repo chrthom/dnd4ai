@@ -2,6 +2,7 @@
   "name": "kampf",
   "typ": "Skill (intern)",
   "beschreibung": "Verwaltet die Kampfabwicklung für D&D 5e. Wird automatisch aufgerufen, wenn ein Kampf beginnt (z.B. durch Gegnerkontakt oder /kampf starten). Führt Runde für Runde aus, bis der Kampf beendet ist.",
+  "verweis": "Tod, Todesrettungswürfe und Deus-Ex-Machina-Mechanismus → engine/regeln/tod.json",
   "ausloeser": [
     "Gegnerkontakt (z.B. Hinterhalt in Akt 1)",
     "Spielerinitiation (z.B. Angrenzen eines Gegners)",
@@ -86,8 +87,7 @@
         "Magischer Gegner": "Wirkt Zauber oder nutzt magische Fähigkeiten",
         "Flüchtender Gegner": "Versucht zu fliehen, wenn HP < 50%"
       },
-      "automatisch": true,
-      "beschreibung": "Die KI wählt die Action automatisch aus und führt sie durch (Würfeln, Trefferberechnung, Schadensberechnung)."
+      "automatisch": true
     },
     "phase_3_ende_pruefen": {
       "beschreibung": "Prüfen, ob Kampf beendet ist.",
@@ -98,7 +98,12 @@
         "Spieler fliehen",
         "Kapitulation",
         "Zeitlimit erreicht"
-      ]
+      ],
+      "tod_und_0hp_handling": {
+        "verweis": "engine/regeln/tod.json",
+        "wenn_spieler_0hp": "Nicht als 'besiegt' markieren – stattdessen Todesrettungswürfe starten (tod.json → einzelner_spieler_0hp)",
+        "wenn_alle_spieler_0hp": "Todesrettungswürfe laufen für alle. Sobald klar ist, dass kein Charakter sich ohne externe Hilfe erholen kann → Deus-Ex-Machina-Mechanismus auslösen (tod.json → gruppen_niederlage)"
+      }
     }
   },
   "npc_ki-logik": {

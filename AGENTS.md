@@ -136,6 +136,32 @@ Die KI sollte **automatisch auf Nachrichten reagieren**, die:
 
 ---
 
+## Tod & Gruppenversagen
+
+> Details und vollständige Regeln: `engine/regeln/tod.json`
+
+### Einzelner Spieler stirbt (D&D 5e Todesrettungswürfe)
+- Charakter fällt auf 0 HP → **bewusstlos**, Todesrettungswürfe beginnen (Standard D&D 5e)
+- Jede Runde: `1d20` – 10+ = Erfolg, 1–9 = Misserfolg, Nat. 20 = sofort 1 HP, Nat. 1 = 2 Misserfolge
+- **3 Erfolge** → stabilisiert (kein weiteres Würfeln, bleibt bewusstlos bis Heilung)
+- **3 Misserfolge** → Charakter stirbt
+- Treffer auf bewusstlosen Charakter: +1 Misserfolg (kritischer Treffer: +2)
+- Heilung während bewusstlos: Charakter erwacht mit geheilten HP
+- **Verbündete können stabilisieren**: Zug opfern + DC 10 Heilkunde-Wurf (WIS/Medicine) → bei Erfolg sofort stabilisiert
+- Bei **Tod**: Spieler verliert 1 Level (min. Level 1) und scheidet für das laufende Kapitel aus. **Rückkehr zu Beginn des nächsten Kapitels** mit neuem Level.
+
+### Gruppenversagen & Deus Ex Machina
+Wenn **alle aktiven Charaktere kampfunfähig** sind **oder** das Kapitelziel **objektiv unerreichbar** ist, greift der DM narrativ ein:
+
+1. **Rettungsszene** (In-Game, dramatisch): Harper-Agent / Tusk nimmt sie gefangen / externe Katastrophe / unbekannter Verbündeter
+2. **Alle aktiven Charaktere** werden auf 1 HP gerettet
+3. **Permanente Konsequenz** (Off-Game ankündigen mit `⚠️ **Deus Ex Machina**`):
+   - **Leicht**: Trauma-Nachteil auf eine Fertigkeit (bis Ende nächster Akt) oder Ruf −2 bei einer Fraktion
+   - **Mittel**: −1 Attribut dauerhaft, oder verbündeter NPC verletzt/fehlt, oder Beweisstück verloren
+   - **Schwer**: Level-Verlust (−1 für alle), oder NPC-Tod (permanent), oder Fraktionsunterstützung verloren
+
+---
+
 ## Story-Struktur
 - **Aufbau**:
   1. **Intro**: Hintergründe zur Spielwelt und Vorgeschichte
