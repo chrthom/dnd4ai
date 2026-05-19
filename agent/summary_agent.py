@@ -4,9 +4,10 @@ Summary Agent – fasst die Kampagne zusammen und generiert Bilder pro Akt.
 
 Startet mit: python3 agent/summary_agent.py
 Liest:  temp/$CAMPAIGN/zusammenfassung/kapitel*.md + chat.md
-Postet: Textzusammenfassung + DALL-E-Bilder pro Akt in Discord
+Postet: Textzusammenfassung + Bilder pro Akt in Discord
+
+Nutzt: image_agent.py für Bildgenerierung (separates Modul für Reusability)
 """
-import io
 import json
 import os
 import sys
@@ -18,12 +19,11 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 from llm import create_adapter
+from image_agent import generate_image, post_image
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 CAMPAIGN = os.environ.get("CAMPAIGN", "stadt-der-tausend-luegen")
 DISCORD_TOKEN = os.environ["DISCORD_TOKEN"]
-IMAGE_MODEL = os.environ.get("IMAGE_MODEL", "dall-e-3")
-IMAGE_PROVIDER = os.environ.get("IMAGE_PROVIDER", "openai")  # openai | hub
 
 _config_path = BASE_DIR / "campaigns" / CAMPAIGN / "config.json"
 with open(_config_path) as f:
@@ -110,41 +110,6 @@ def generate_summary_text(akt: dict) -> str:
     return adapter.complete(system, messages)
 
 
-def generate_image(prompt: str) -> bytes | None:
-    """Generiert ein Bild via DALL-E oder AI Hub. Versucht Hub zuerst, dann OpenAI als Fallback."""
-    providers = []
-    if IMAGE_PROVIDER == "hub" or os.environ.get("AI_HUB_TOKEN"):
-        providers.append(("hub", os.environ.get("AI_HUB_TOKEN", ""), f"{os.environ.get('AI_HUB_URL','').rstrip('/')}/images/generations"))
-    if os.environ.get("OPENAI_API_KEY"):
-        providers.append(("openai", os.environ.get("OPENAI_API_KEY", ""), "https://api.openai.com/v1/images/generations"))
-
-    if not providers:
-        print("  ✗ Kein Image-API-Key gesetzt (AI_HUB_TOKEN oder OPENAI_API_KEY)", file=sys.stderr)
-        return None
-
-    for provider_name, api_key, url in providers:
-        try:
-            resp = requests.post(
-                url,
-                json={"model": IMAGE_MODEL, "prompt": prompt, "n": 1, "size": "1024x1024"},
-                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-                timeout=60,
-            )
-            if resp.status_code == 400 and "budget" in resp.text.lower():
-                print(f"  ✗ {provider_name}: Budget überschritten – versuche nächsten Provider", file=sys.stderr)
-                continue
-            resp.raise_for_status()
-            image_url = resp.json()["data"][0]["url"]
-            img_resp = requests.get(image_url, timeout=30)
-            img_resp.raise_for_status()
-            return img_resp.content
-        except Exception as e:
-            print(f"  ✗ {provider_name}: {e}", file=sys.stderr)
-            continue
-
-    return None
-
-
 def post_text(content: str) -> None:
     """Postet Text in den Discord-Kanal."""
     # Splitten bei 2000-Zeichen-Limit
@@ -156,17 +121,6 @@ def post_text(content: str) -> None:
             headers={"Authorization": f"Bot {DISCORD_TOKEN}"},
         )
         resp.raise_for_status()
-
-
-def post_image(image_bytes: bytes, caption: str, filename: str = "bild.png") -> None:
-    """Postet ein Bild mit Caption in Discord."""
-    resp = requests.post(
-        f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages",
-        data={"content": caption},
-        files={"files[0]": (filename, io.BytesIO(image_bytes), "image/png")},
-        headers={"Authorization": f"Bot {DISCORD_TOKEN}"},
-    )
-    resp.raise_for_status()
 
 
 def run():
@@ -186,7 +140,7 @@ def run():
         summary = generate_summary_text(akt)
         post_text(f"## Akt {akt['nr']}: {akt['titel']}\n\n{summary}")
 
-        # Bilder
+        # Bilder (via image_agent.py)
         for i, prompt in enumerate(akt["bild_prompts"], 1):
             print(f"  Generiere Bild {i}/2...")
             image_bytes = generate_image(prompt)
@@ -194,6 +148,8 @@ def run():
                 post_image(
                     image_bytes,
                     caption="",
+                    channel_id=CHANNEL_ID,
+                    token=DISCORD_TOKEN,
                     filename=f"akt{akt['nr']}_bild{i}.png",
                 )
                 print(f"  ✓ Bild {i} gepostet")
