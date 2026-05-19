@@ -1,0 +1,211 @@
+{
+  "name": "tod_und_niederlage",
+  "typ": "Regelwerk (intern)",
+  "beschreibung": "Regelt den Tod einzelner Charaktere (D&D 5e Todesrettungswürfe) sowie das Scheitern der gesamten Gruppe (Deus-Ex-Machina-Mechanismus mit permanenten Konsequenzen).",
+
+  "einzelner_spieler_0hp": {
+    "beschreibung": "Ein Spielercharakter fällt auf 0 HP → Bewusstlosigkeit + Todesrettungswürfe beginnen",
+    "sofort_aktionen": [
+      "Charakter auf Status 'bewusstlos' setzen (kann keine Aktionen ausführen)",
+      "Todesrettungswurf-Zähler initialisieren: { erfolge: 0, misserfolge: 0 }",
+      "Narrative Beschreibung posten (*{name} bricht zusammen!*)"
+    ],
+    "todesrettungswuerfe": {
+      "beschreibung": "Zu Beginn jedes Zuges des bewusstlosen Charakters wirft die KI 1d20. Standard D&D 5e: 3 Erfolge oder 3 Misserfolge entscheiden.",
+      "regeln": [
+        { "bedingung": "Natürliche 20", "effekt": "Charakter erwacht sofort mit 1 HP. Alle Zähler zurücksetzen." },
+        { "bedingung": "Natürliche 1",  "effekt": "2 Misserfolge statt 1" },
+        { "bedingung": "10–19",         "effekt": "1 Erfolg" },
+        { "bedingung": "2–9",           "effekt": "1 Misserfolg" },
+        { "bedingung": "3 Erfolge",     "effekt": "Stabilisiert: kein weiteres Würfeln nötig, bleibt bewusstlos bis Heilung" },
+        { "bedingung": "3 Misserfolge", "effekt": "Charakter stirbt → siehe charakter_tod" }
+      ],
+      "stabilisieren_durch_verbündete": {
+        "beschreibung": "Ein anderer Spielercharakter kann seinen Zug opfern, um einen bewusstlosen Charakter zu stabilisieren",
+        "aktion": "Spieler opfert seinen Zug (Aktion) und führt einen DC 10 Heilkunde-Wurf (WIS/Medicine) durch",
+        "erfolg": "Bewusstloser Charakter ist sofort stabilisiert – keine weiteren Todesrettungswürfe nötig, bleibt bewusstlos",
+        "misserfolg": "Keine Wirkung; Todesrettungswürfe laufen weiter",
+        "hinweis": "Charaktere mit Heilkunde-Proficiency haben deutlich bessere Erfolgschancen (Modifikator addiert)"
+      },
+      "treffer_waehrend_bewusstlos": {
+        "normaler_treffer":   "1 Misserfolg",
+        "kritischer_treffer": "2 Misserfolge"
+      },
+      "heilung_waehrend_bewusstlos": {
+        "beschreibung": "Erhält ein bewusstloser Charakter Heilung, erwacht er sofort",
+        "effekt": "HP werden auf den Heilungswert gesetzt, Status → aktiv, Zähler zurücksetzen"
+      },
+      "ausgabe_format": "💀 **{name}** liegt bewusstlos! Todesrettungswurf: `1d20 = {ergebnis}` → {erfolge}✅ / {misserfolge}❌"
+    }
+  },
+
+  "charakter_tod": {
+    "beschreibung": "3 Misserfolge bei Todesrettungswürfen → Charakter stirbt. Der Spieler scheidet für das laufende Kapitel aus und kehrt zum nächsten Kapitel zurück – geschwächt.",
+    "ablauf": [
+      "Narrativen, szenisch passenden Tod beschreiben (heroisch oder tragisch, je nach Kontext)",
+      "Level des Charakters um 1 senken (Minimum: Level 1). XP auf Halbpunkt des neuen Levels setzen.",
+      "Alle durch das verlorene Level gewonnenen Fähigkeiten und HP werden sofort abgezogen.",
+      "Charakterbogen-Datei aktualisieren: Status 'gefallen (Kapitel {N})', Level eintragen",
+      "Off-Game-Ansage in Discord: Spieler ist für dieses Kapitel raus, kehrt zu Beginn des nächsten Kapitels zurück",
+      "Narrativ: Charakter wird von der Gruppe geborgen oder bleibt zurück (je nach Szene)"
+    ],
+    "rueckkehr": {
+      "zeitpunkt":    "Zu Beginn des nächsten Akts – mit narrativer Begründung (erholt, entkommen, gerettet)",
+      "zustand":      "Level wie gesetzt, HP auf Maximum des neuen Levels, ausrüstung wie zuletzt dokumentiert",
+      "konsequenz":   "Level-Verlust ist permanent – er wird durch normales Spielen wieder aufgeholt"
+    },
+    "ausgabe_format_discord": [
+      "☠️ **{name}** ist gefallen! *{narrative_beschreibung}*",
+      "({spieler_discord_name}) Du scheidest für dieses Kapitel aus. Dein Charakter kehrt zu Beginn von Kapitel {N+1} zurück – auf Level {neues_level}."
+    ]
+  },
+
+  "gruppen_niederlage": {
+    "beschreibung": "Die gesamte Gruppe scheitert – entweder alle aktiven Charaktere sind außer Gefecht, oder das Kapitelziel ist objektiv unerreichbar.",
+
+    "erkennungskriterien": [
+      {
+        "id": "alle_außer_gefecht",
+        "beschreibung": "Alle noch aktiven Spielercharaktere haben 0 HP (bewusstlos, sterbend) oder sind bereits gefallen",
+        "pruefung": "HP aller aktiven Charaktere ≤ 0 (Charaktere, die bereits in diesem Kapitel gefallen sind, zählen nicht)"
+      },
+      {
+        "id": "ziel_unerreichbar",
+        "beschreibung": "Das Kapitelziel kann durch keine plausible Aktion mehr erreicht werden",
+        "beispiele_pro_akt": {
+          "akt_1": "Alle Beweise vernichtet UND Rückkehr zum Harper-Stützpunkt abgeschnitten",
+          "akt_2": "Tusk hat die Gedankenschmiede verlassen, alle Beweise sind weg, kein Fluchtweg mehr offen",
+          "akt_3": "Tribunal hat bereits rechtskräftiges Urteil gefällt ohne Beweise der Gruppe, Tusk ist unkontrolliert entkommen"
+        }
+      }
+    ],
+
+    "deus_ex_machina": {
+      "beschreibung": "Der DM greift narrativ ein und rettet die Gruppe – aber nicht ohne dauerhaften Preis. Alle aktiven Charaktere werden mit 1 HP gerettet; Tod-Zähler werden zurückgesetzt.",
+      "narrativ_optionen": [
+        {
+          "id":       "harper_rettung",
+          "name":     "Harper-Agent rettet die Gruppe",
+          "passt_zu": ["akt_1", "akt_2"],
+          "beispiel": "*Eine Gestalt in Harper-Grau zerrt euch aus den Trümmern. 'Ihr seid zu wertvoll, um hier zu enden', knurrt sie – und ist verschwunden, bevor ihr fragen könnt.*"
+        },
+        {
+          "id":       "gefangen_statt_tot",
+          "name":     "Tusk lässt die Gruppe absichtlich leben",
+          "passt_zu": ["akt_1", "akt_2", "akt_3"],
+          "beispiel": "*Elrond Tusk tritt aus dem Schatten, die Hand gehoben. 'Genug. Lebende Narren sind nützlicher als tote Märtyrer.' Die Wächter treten zurück.*"
+        },
+        {
+          "id":       "umgebungsereignis",
+          "name":     "Externe Katastrophe erzwingt Pause",
+          "passt_zu": ["akt_1", "akt_2", "akt_3"],
+          "beispiel": "*Ein explosiver Magieschmiede-Unfall erschüttert das Gebäude – Feuer, Rauch, Chaos. Alle fliehen. Die Gruppe taumelt gerettet in die Nacht.*"
+        },
+        {
+          "id":       "unbekannter_verbündeter",
+          "name":     "Unbekannter Verbündeter greift ein",
+          "passt_zu": ["akt_2", "akt_3"],
+          "beispiel": "*Aus dem Dunkel prescht eine maskierte Gestalt – geschickt, stumm, tödlich. 'Erklärungen später. Jetzt: lauft.'*"
+        }
+      ],
+
+      "ablauf_dm": [
+        "1. Schweregrad bestimmen: leicht / mittel / schwer",
+        "2. Narrative Rettungsoption auswählen (zur Szene passend)",
+        "3. Rettungsszene dramatisch beschreiben (In-Game, kursiv)",
+        "4. Off-Game Ansage: Konsequenz(en) klar benennen",
+        "5. Alle aktiven Charaktere auf HP = 1 setzen; Todesrettungswurf-Zähler zurücksetzen",
+        "6. temp/$CAMPAIGN/status.txt auf nächsten sinnvollen Checkpoint setzen",
+        "7. Story am nächsten Checkpoint fortsetzen"
+      ]
+    },
+
+    "permanent_konsequenzen": {
+      "beschreibung": "1–2 Konsequenzen werden permanent angewendet (Schweregrad bestimmt Auswahl). Immer Off-Game ankündigen mit ⚠️ **Deus Ex Machina**.",
+
+      "schweregrad_zuweisung": {
+        "leicht": "Gruppe hatte gute Chancen, scheiterte knapp – z.B. nur 1–2 Charaktere auf 0 HP, Ziel fast erreicht",
+        "mittel": "Klare Niederlage – mehrere Charaktere bewusstlos ODER Kapitelziel-Teilschritt irreversibel verpasst",
+        "schwer": "Totales Scheitern – alle Charaktere auf 0 HP ODER Kapitelziel vollständig unerreichbar"
+      },
+
+      "tabelle": [
+        {
+          "id":          "trauma_nachteil",
+          "schweregrad": "leicht",
+          "name":        "Trauma-Nachteil",
+          "effekt":      "Alle Charaktere haben bis Ende des nächsten Akts Nachteil auf eine Fertigkeitskategorie (passend zur Niederlage).",
+          "beispiel":    "Alarm ausgelöst: Nachteil auf alle Heimlichkeitswürfe in Akt 2",
+          "reversibel":  "Ja – nach Abschluss des nächsten Akts"
+        },
+        {
+          "id":          "ruf_verlust_minor",
+          "schweregrad": "leicht",
+          "name":        "Ruf beschädigt",
+          "effekt":      "Eine Fraktion verliert Vertrauen: -2 auf alle Sozialwürfe mit dieser Fraktion.",
+          "beispiel":    "Harpers sind enttäuscht: -2 auf Diplomatie/Überzeugung mit Harpers",
+          "reversibel":  "Ja – durch spätere positive Aktionen (heroische Tat, DC 15 Überzeugungswurf)"
+        },
+        {
+          "id":          "attribut_verlust",
+          "schweregrad": "mittel",
+          "name":        "Attributsverlust",
+          "effekt":      "Jeder Charakter verliert -1 auf das in der Niederlage meistgenutzte Attribut (Mindestwert 8). Alle abgeleiteten Werte werden sofort aktualisiert.",
+          "beispiel":    "Kämpfer verliert STR 17 → 16 (Angriffs-/Schadensbonus -1)",
+          "reversibel":  "Nein (nur durch Restaurationszauber, DC 18)"
+        },
+        {
+          "id":          "verbündeter_verletzt",
+          "schweregrad": "mittel",
+          "name":        "Verbündeter NPC verletzt",
+          "effekt":      "Ein wichtiger verbündeter NPC wurde bei der Niederlage verletzt. Steht im nächsten Akt nicht zur Verfügung.",
+          "beispiel":    "Harper-Anführerin Seraphina verwundet – keine Harper-Ressourcen in Akt 2",
+          "reversibel":  "NPC kehrt ab Akt 3 zurück"
+        },
+        {
+          "id":          "ressourcen_verlust",
+          "schweregrad": "mittel",
+          "name":        "Beweismittel / Ressource verloren",
+          "effekt":      "Ein Beweisstück oder magischer Gegenstand geht permanent verloren.",
+          "beispiel":    "Gefälschtes Dokument aus Akt 1 vernichtet – -1 Beweismittel im Tribunal",
+          "reversibel":  "Nein"
+        },
+        {
+          "id":          "level_verlust",
+          "schweregrad": "schwer",
+          "name":        "Level-Verlust (Gruppe)",
+          "effekt":      "Alle aktiven Charaktere verlieren 1 Level. XP werden auf den Halbpunkt des vorherigen Levels gesetzt. Alle dadurch verlorenen Fähigkeiten und HP-Würfel gelten sofort.",
+          "beispiel":    "Level 3 → Level 2 (XP 450, Trefferpunktmaximum sinkt, Level-3-Fähigkeiten weg)",
+          "reversibel":  "Ja – durch normales Spielen"
+        },
+        {
+          "id":          "npc_tod",
+          "schweregrad": "schwer",
+          "name":        "NPC stirbt",
+          "effekt":      "Ein wichtiger verbündeter NPC stirbt irreversibel durch die Niederlage der Gruppe.",
+          "beispiel":    "Meister Quill, Harper-Kontakt, stirbt. Kein Ersatz, kein Wiedersehen.",
+          "reversibel":  "Nein"
+        },
+        {
+          "id":          "fraktion_verlust",
+          "schweregrad": "schwer",
+          "name":        "Fraktionsunterstützung verloren",
+          "effekt":      "Eine Fraktion zieht ihre Unterstützung dauerhaft zurück. Keine Hilfe, keine Ressourcen, feindliche Neutralität.",
+          "beispiel":    "Harpers beenden die Zusammenarbeit – kein Rückhalt, keine Verstärkung im Tribunal",
+          "reversibel":  "Nur durch heroische Einzeltat + DC 20 Sozialwurf"
+        }
+      ]
+    },
+
+    "dm_entscheidungsbaum": {
+      "schritt_1": "Sind alle aktiven Charaktere bewusstlos/sterbend ODER ist das Kapitelziel unerreichbar?",
+      "schritt_2": "Schweregrad bestimmen: leicht / mittel / schwer",
+      "schritt_3": "Narrative Rettungsoption wählen (passt zur aktuellen Szene und zum aktiven Akt)",
+      "schritt_4": "Konsequenz(en) aus der Tabelle wählen (1 bei leicht, 1–2 bei mittel/schwer)",
+      "schritt_5": "Rettungsszene In-Game beschreiben (*kursiv*, dramatisch)",
+      "schritt_6": "Konsequenz Off-Game ankündigen: '⚠️ **Deus Ex Machina** – Die Gruppe wurde gerettet, aber es gibt einen Preis:'",
+      "schritt_7": "Charakterbögen + temp/$CAMPAIGN/ aktualisieren; alle aktiven Chars auf HP = 1 setzen",
+      "schritt_8": "Story am nächsten Checkpoint fortsetzen"
+    }
+  }
+}
