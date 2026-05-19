@@ -4,9 +4,10 @@ Summary Agent – fasst die Kampagne zusammen und generiert Bilder pro Akt.
 
 Startet mit: python3 agent/summary_agent.py
 Liest:  temp/$CAMPAIGN/zusammenfassung/kapitel*.md + chat.md
-Postet: Textzusammenfassung + DALL-E-Bilder pro Akt in Discord
+Postet: Textzusammenfassung + Bilder pro Akt in Discord
+
+Nutzt: image_agent.py für Bildgenerierung (separates Modul für Reusability)
 """
-import io
 import json
 import os
 import sys
@@ -18,12 +19,11 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 from llm import create_adapter
+from image_agent import generate_image, post_image
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 CAMPAIGN = os.environ.get("CAMPAIGN", "stadt-der-tausend-luegen")
 DISCORD_TOKEN = os.environ["DISCORD_TOKEN"]
-IMAGE_MODEL = os.environ.get("IMAGE_MODEL", "dall-e-3")
-IMAGE_PROVIDER = os.environ.get("IMAGE_PROVIDER", "openai")  # openai | hub
 
 _config_path = BASE_DIR / "campaigns" / CAMPAIGN / "config.json"
 with open(_config_path) as f:
@@ -110,106 +110,6 @@ def generate_summary_text(akt: dict) -> str:
     return adapter.complete(system, messages)
 
 
-def _generate_via_pollinations(prompt: str) -> bytes | None:
-    """Kostenlose Bildgenerierung via Pollinations.ai – kein API-Key nötig.
-    Nutzt Flux-Modell (schnell + gute Qualität)."""
-    import urllib.parse
-    encoded = urllib.parse.quote(prompt)
-    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&model=flux&nologo=true"
-    try:
-        resp = requests.get(url, timeout=120)
-        resp.raise_for_status()
-        return resp.content
-    except Exception as e:
-        print(f"  ✗ pollinations: {e}", file=sys.stderr)
-        return None
-
-
-def _generate_via_openai_compatible(prompt: str, api_key: str, url: str, provider_name: str) -> bytes | None:
-    try:
-        resp = requests.post(
-            url,
-            json={"model": IMAGE_MODEL, "prompt": prompt, "n": 1, "size": "1024x1024"},
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            timeout=60,
-        )
-        if resp.status_code == 400 and "budget" in resp.text.lower():
-            print(f"  ✗ {provider_name}: Budget überschritten", file=sys.stderr)
-            return None
-        resp.raise_for_status()
-        image_url = resp.json()["data"][0]["url"]
-        img_resp = requests.get(image_url, timeout=30)
-        img_resp.raise_for_status()
-        return img_resp.content
-    except Exception as e:
-        print(f"  ✗ {provider_name}: {e}", file=sys.stderr)
-        return None
-
-
-def _generate_via_custom(prompt: str, provider_name: str) -> bytes | None:
-    """Custom Image Provider via Env-Variablen steuerbar.
-
-    Env-Schema für Custom-Provider:
-      IMAGE_PROVIDER_<NAME>_URL=https://api.example.com/images
-      IMAGE_PROVIDER_<NAME>_API_KEY=your_key_here
-      IMAGE_PROVIDER_<NAME>_MODEL=model_name (optional, default: IMAGE_MODEL)
-
-    Beispiel für Mistral:
-      IMAGE_PROVIDER_MISTRAL_URL=https://api.mistral.ai/v1/images/generations
-      IMAGE_PROVIDER_MISTRAL_API_KEY=your_mistral_key
-      IMAGE_PROVIDER_MISTRAL_MODEL=pixtral (optional)
-    """
-    env_prefix = f"IMAGE_PROVIDER_{provider_name.upper()}"
-    api_key = os.environ.get(f"{env_prefix}_API_KEY", "")
-    api_url = os.environ.get(f"{env_prefix}_URL", "")
-    model = os.environ.get(f"{env_prefix}_MODEL", IMAGE_MODEL)
-
-    if not api_key or not api_url:
-        print(f"  ✗ {provider_name}: missing {env_prefix}_API_KEY or {env_prefix}_URL", file=sys.stderr)
-        return None
-
-    return _generate_via_openai_compatible(prompt, api_key, api_url, provider_name)
-
-
-def generate_image(prompt: str) -> bytes | None:
-    """Generiert ein Bild. Provider-Reihenfolge per IMAGE_PROVIDER steuerbar.
-
-    Vordefinierte Provider:
-      pollinations → kostenlos, Flux-Modell, kein Key
-      hub          → adesso AI Hub (DALL-E)
-      openai       → OpenAI direkt (DALL-E)
-
-    Custom Provider (Mistral, etc.):
-      <name>       → via IMAGE_PROVIDER_<NAME>_URL, IMAGE_PROVIDER_<NAME>_API_KEY
-    """
-    order = [p.strip() for p in IMAGE_PROVIDER.split(",")]
-
-    for provider_name in order:
-        if provider_name == "pollinations":
-            result = _generate_via_pollinations(prompt)
-        elif provider_name == "hub" and os.environ.get("AI_HUB_TOKEN"):
-            result = _generate_via_openai_compatible(
-                prompt,
-                os.environ.get("AI_HUB_TOKEN", ""),
-                f"{os.environ.get('AI_HUB_URL','').rstrip('/')}/images/generations",
-                "hub",
-            )
-        elif provider_name == "openai" and os.environ.get("OPENAI_API_KEY"):
-            result = _generate_via_openai_compatible(
-                prompt,
-                os.environ.get("OPENAI_API_KEY", ""),
-                "https://api.openai.com/v1/images/generations",
-                "openai",
-            )
-        elif os.environ.get(f"IMAGE_PROVIDER_{provider_name.upper()}_URL"):
-            # Custom Provider: mistral, replicate, etc.
-            result = _generate_via_custom(prompt, provider_name)
-        else:
-            continue
-        if result:
-            return result
-
-
 def post_text(content: str) -> None:
     """Postet Text in den Discord-Kanal."""
     # Splitten bei 2000-Zeichen-Limit
@@ -221,17 +121,6 @@ def post_text(content: str) -> None:
             headers={"Authorization": f"Bot {DISCORD_TOKEN}"},
         )
         resp.raise_for_status()
-
-
-def post_image(image_bytes: bytes, caption: str, filename: str = "bild.png") -> None:
-    """Postet ein Bild mit Caption in Discord."""
-    resp = requests.post(
-        f"https://discord.com/api/v10/channels/{CHANNEL_ID}/messages",
-        data={"content": caption},
-        files={"files[0]": (filename, io.BytesIO(image_bytes), "image/png")},
-        headers={"Authorization": f"Bot {DISCORD_TOKEN}"},
-    )
-    resp.raise_for_status()
 
 
 def run():
@@ -251,7 +140,7 @@ def run():
         summary = generate_summary_text(akt)
         post_text(f"## Akt {akt['nr']}: {akt['titel']}\n\n{summary}")
 
-        # Bilder
+        # Bilder (via image_agent.py)
         for i, prompt in enumerate(akt["bild_prompts"], 1):
             print(f"  Generiere Bild {i}/2...")
             image_bytes = generate_image(prompt)
@@ -259,6 +148,8 @@ def run():
                 post_image(
                     image_bytes,
                     caption="",
+                    channel_id=CHANNEL_ID,
+                    token=DISCORD_TOKEN,
                     filename=f"akt{akt['nr']}_bild{i}.png",
                 )
                 print(f"  ✓ Bild {i} gepostet")
