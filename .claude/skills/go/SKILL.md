@@ -17,12 +17,21 @@ Führe folgende Schritte aus:
    - Die neuen Nachrichten inkl. Verfasser und Zeitstempel in `temp/$CAMPAIGN/chat.md` zu speichern
    - **Exit-Codes**: `0` = neue Nachrichten gefunden, `1` = keine neuen Nachrichten
 2. Analysiere die neuen Nachrichten in `temp/$CAMPAIGN/chat.md`
-3. Orientiere dich an den Anweisungen in `campaigns/$CAMPAIGN/abschnitte/<abschnitt>.md` (Abschnitt aus `temp/$CAMPAIGN/status.txt`)
-   - Spielregeln und Mechaniken liegen in `engine/regeln/` (kampf.json, charakter.json, charakter_setup.json)
+3. **Tod & Gruppencheck** (vor jeder weiteren Aktion, basierend auf `engine/regeln/tod.json`):
+   - **Charakter auf 0 HP**: Todesrettungswürfe starten (1d20 je Zug). Format: `💀 **{name}** liegt bewusstlos! Todesrettungswurf: 1d20 = {X} → {Y}✅ / {Z}❌`. Verbündete können mit DC 10 Heilkunde-Wurf (Zug opfern) sofort stabilisieren. Bei 3 Misserfolgen → Tod (`tod.json → charakter_tod`): Charakter verliert 1 Level, scheidet für dieses Kapitel aus, kehrt zu Beginn des nächsten Kapitels zurück. Charakterbogen aktualisieren, Off-Game in Discord ankündigen.
+   - **Alle aktiven Charaktere auf 0 HP / Kapitelziel unerreichbar**: Deus-Ex-Machina auslösen (`tod.json → gruppen_niederlage`):
+     1. Schweregrad bestimmen (leicht/mittel/schwer)
+     2. Narrative Rettungsoption auswählen und In-Game beschreiben
+     3. Alle aktiven Charaktere auf 1 HP setzen
+     4. Permanente Konsequenz(en) anwenden und Off-Game ankündigen: `⚠️ **Deus Ex Machina** – Die Gruppe wurde gerettet, aber es gibt einen Preis:`
+     5. Charakterbögen + `temp/$CAMPAIGN/` aktualisieren
+     6. Story am nächsten Checkpoint fortsetzen
+4. Orientiere dich an den Anweisungen in `campaigns/$CAMPAIGN/abschnitte/<abschnitt>.md` (Abschnitt aus `temp/$CAMPAIGN/status.txt`)
+   - Spielregeln und Mechaniken liegen in `engine/regeln/` (kampf.json, charakter.json, charakter_setup.json, tod.json)
    - Akt-Details (NPCs, Checkpoints, Fallen) liegen in `campaigns/$CAMPAIGN/akte/akt_N.json`
    - Spieler-Charakterbögen und Persönlichkeitsprofile liegen in `campaigns/$CAMPAIGN/players/<name>/`
-4. Sende passende Nachrichten in Discord. Poste bei Bedarf in mehreren Message-Blocks (Discord-Limit: 2000 Zeichen)
-5. **WICHTIG – Polling auf Spieler-Antworten**: Solltest du auf Antworten warten (KI-Spieler reagieren oft innerhalb von Sekunden), dann nutze **NICHT** wiederholte `sleep`-Aufrufe oder `ScheduleWakeup`. Stattdessen:
+5. Sende passende Nachrichten in Discord. Poste bei Bedarf in mehreren Message-Blocks (Discord-Limit: 2000 Zeichen)
+6. **WICHTIG – Polling auf Spieler-Antworten**: Solltest du auf Antworten warten (KI-Spieler reagieren oft innerhalb von Sekunden), dann nutze **NICHT** wiederholte `sleep`-Aufrufe oder `ScheduleWakeup`. Stattdessen:
 
    ```bash
    until python3 .claude/skills/go/scripts/fetch_messages.py; do sleep 5; done
