@@ -1,6 +1,6 @@
 ---
 name: go
-description: Rollenspiel als Dungeon Master starten oder fortsetzen. Holt neue Discord-Nachrichten und steuert die nächste Spielphase.
+description: Rollenspiel als Dungeon Master starten oder fortsetzen. Holt neue Discord-Nachrichten und steuert die nächste Spielphase. Wird nur auf expliziten Nutzeraufruf gestartet – niemals automatisch durch die KI.
 ---
 
 Nutze die Umgebungsvariablen `DISCORD_TOKEN` und `CAMPAIGN` (Default: `stadt-der-tausend-luegen`), um mit der Discord API im Spielkanal zu kommunizieren.
