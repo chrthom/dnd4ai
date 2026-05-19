@@ -123,10 +123,11 @@ def generate_summary_text(akt: dict) -> str:
 
 
 def _generate_via_pollinations(prompt: str) -> bytes | None:
-    """Kostenlose Bildgenerierung via Pollinations.ai – kein API-Key nötig."""
+    """Kostenlose Bildgenerierung via Pollinations.ai – kein API-Key nötig.
+    Nutzt Flux-Modell (schnell + gute Qualität)."""
     import urllib.parse
     encoded = urllib.parse.quote(prompt)
-    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&nologo=true"
+    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&model=flux&nologo=true"
     try:
         resp = requests.get(url, timeout=120)
         resp.raise_for_status()
@@ -157,12 +158,41 @@ def _generate_via_openai_compatible(prompt: str, api_key: str, url: str, provide
         return None
 
 
+def _generate_via_custom(prompt: str, provider_name: str) -> bytes | None:
+    """Custom Image Provider via Env-Variablen steuerbar.
+
+    Env-Schema für Custom-Provider:
+      IMAGE_PROVIDER_<NAME>_URL=https://api.example.com/images
+      IMAGE_PROVIDER_<NAME>_API_KEY=your_key_here
+      IMAGE_PROVIDER_<NAME>_MODEL=model_name (optional, default: IMAGE_MODEL)
+
+    Beispiel für Mistral:
+      IMAGE_PROVIDER_MISTRAL_URL=https://api.mistral.ai/v1/images/generations
+      IMAGE_PROVIDER_MISTRAL_API_KEY=your_mistral_key
+      IMAGE_PROVIDER_MISTRAL_MODEL=pixtral (optional)
+    """
+    env_prefix = f"IMAGE_PROVIDER_{provider_name.upper()}"
+    api_key = os.environ.get(f"{env_prefix}_API_KEY", "")
+    api_url = os.environ.get(f"{env_prefix}_URL", "")
+    model = os.environ.get(f"{env_prefix}_MODEL", IMAGE_MODEL)
+
+    if not api_key or not api_url:
+        print(f"  ✗ {provider_name}: missing {env_prefix}_API_KEY or {env_prefix}_URL", file=sys.stderr)
+        return None
+
+    return _generate_via_openai_compatible(prompt, api_key, api_url, provider_name)
+
+
 def generate_image(prompt: str) -> bytes | None:
     """Generiert ein Bild. Provider-Reihenfolge per IMAGE_PROVIDER steuerbar.
 
-    pollinations → kostenlos, kein Key (Default)
-    hub          → adesso AI Hub (DALL-E)
-    openai       → OpenAI direkt (DALL-E)
+    Vordefinierte Provider:
+      pollinations → kostenlos, Flux-Modell, kein Key
+      hub          → adesso AI Hub (DALL-E)
+      openai       → OpenAI direkt (DALL-E)
+
+    Custom Provider (Mistral, etc.):
+      <name>       → via IMAGE_PROVIDER_<NAME>_URL, IMAGE_PROVIDER_<NAME>_API_KEY
     """
     order = [p.strip() for p in IMAGE_PROVIDER.split(",")]
 
@@ -183,6 +213,9 @@ def generate_image(prompt: str) -> bytes | None:
                 "https://api.openai.com/v1/images/generations",
                 "openai",
             )
+        elif os.environ.get(f"IMAGE_PROVIDER_{provider_name.upper()}_URL"):
+            # Custom Provider: mistral, replicate, etc.
+            result = _generate_via_custom(prompt, provider_name)
         else:
             continue
         if result:
