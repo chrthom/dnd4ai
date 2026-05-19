@@ -110,39 +110,104 @@ def generate_summary_text(akt: dict) -> str:
     return adapter.complete(system, messages)
 
 
-def generate_image(prompt: str) -> bytes | None:
-    """Generiert ein Bild via DALL-E oder AI Hub. Versucht Hub zuerst, dann OpenAI als Fallback."""
-    providers = []
-    if IMAGE_PROVIDER == "hub" or os.environ.get("AI_HUB_TOKEN"):
-        providers.append(("hub", os.environ.get("AI_HUB_TOKEN", ""), f"{os.environ.get('AI_HUB_URL','').rstrip('/')}/images/generations"))
-    if os.environ.get("OPENAI_API_KEY"):
-        providers.append(("openai", os.environ.get("OPENAI_API_KEY", ""), "https://api.openai.com/v1/images/generations"))
-
-    if not providers:
-        print("  ✗ Kein Image-API-Key gesetzt (AI_HUB_TOKEN oder OPENAI_API_KEY)", file=sys.stderr)
+def _generate_via_pollinations(prompt: str) -> bytes | None:
+    """Kostenlose Bildgenerierung via Pollinations.ai – kein API-Key nötig.
+    Nutzt Flux-Modell (schnell + gute Qualität)."""
+    import urllib.parse
+    encoded = urllib.parse.quote(prompt)
+    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&model=flux&nologo=true"
+    try:
+        resp = requests.get(url, timeout=120)
+        resp.raise_for_status()
+        return resp.content
+    except Exception as e:
+        print(f"  ✗ pollinations: {e}", file=sys.stderr)
         return None
 
-    for provider_name, api_key, url in providers:
-        try:
-            resp = requests.post(
-                url,
-                json={"model": IMAGE_MODEL, "prompt": prompt, "n": 1, "size": "1024x1024"},
-                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-                timeout=60,
-            )
-            if resp.status_code == 400 and "budget" in resp.text.lower():
-                print(f"  ✗ {provider_name}: Budget überschritten – versuche nächsten Provider", file=sys.stderr)
-                continue
-            resp.raise_for_status()
-            image_url = resp.json()["data"][0]["url"]
-            img_resp = requests.get(image_url, timeout=30)
-            img_resp.raise_for_status()
-            return img_resp.content
-        except Exception as e:
-            print(f"  ✗ {provider_name}: {e}", file=sys.stderr)
-            continue
 
-    return None
+def _generate_via_openai_compatible(prompt: str, api_key: str, url: str, provider_name: str) -> bytes | None:
+    try:
+        resp = requests.post(
+            url,
+            json={"model": IMAGE_MODEL, "prompt": prompt, "n": 1, "size": "1024x1024"},
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            timeout=60,
+        )
+        if resp.status_code == 400 and "budget" in resp.text.lower():
+            print(f"  ✗ {provider_name}: Budget überschritten", file=sys.stderr)
+            return None
+        resp.raise_for_status()
+        image_url = resp.json()["data"][0]["url"]
+        img_resp = requests.get(image_url, timeout=30)
+        img_resp.raise_for_status()
+        return img_resp.content
+    except Exception as e:
+        print(f"  ✗ {provider_name}: {e}", file=sys.stderr)
+        return None
+
+
+def _generate_via_custom(prompt: str, provider_name: str) -> bytes | None:
+    """Custom Image Provider via Env-Variablen steuerbar.
+
+    Env-Schema für Custom-Provider:
+      IMAGE_PROVIDER_<NAME>_URL=https://api.example.com/images
+      IMAGE_PROVIDER_<NAME>_API_KEY=your_key_here
+      IMAGE_PROVIDER_<NAME>_MODEL=model_name (optional, default: IMAGE_MODEL)
+
+    Beispiel für Mistral:
+      IMAGE_PROVIDER_MISTRAL_URL=https://api.mistral.ai/v1/images/generations
+      IMAGE_PROVIDER_MISTRAL_API_KEY=your_mistral_key
+      IMAGE_PROVIDER_MISTRAL_MODEL=pixtral (optional)
+    """
+    env_prefix = f"IMAGE_PROVIDER_{provider_name.upper()}"
+    api_key = os.environ.get(f"{env_prefix}_API_KEY", "")
+    api_url = os.environ.get(f"{env_prefix}_URL", "")
+    model = os.environ.get(f"{env_prefix}_MODEL", IMAGE_MODEL)
+
+    if not api_key or not api_url:
+        print(f"  ✗ {provider_name}: missing {env_prefix}_API_KEY or {env_prefix}_URL", file=sys.stderr)
+        return None
+
+    return _generate_via_openai_compatible(prompt, api_key, api_url, provider_name)
+
+
+def generate_image(prompt: str) -> bytes | None:
+    """Generiert ein Bild. Provider-Reihenfolge per IMAGE_PROVIDER steuerbar.
+
+    Vordefinierte Provider:
+      pollinations → kostenlos, Flux-Modell, kein Key
+      hub          → adesso AI Hub (DALL-E)
+      openai       → OpenAI direkt (DALL-E)
+
+    Custom Provider (Mistral, etc.):
+      <name>       → via IMAGE_PROVIDER_<NAME>_URL, IMAGE_PROVIDER_<NAME>_API_KEY
+    """
+    order = [p.strip() for p in IMAGE_PROVIDER.split(",")]
+
+    for provider_name in order:
+        if provider_name == "pollinations":
+            result = _generate_via_pollinations(prompt)
+        elif provider_name == "hub" and os.environ.get("AI_HUB_TOKEN"):
+            result = _generate_via_openai_compatible(
+                prompt,
+                os.environ.get("AI_HUB_TOKEN", ""),
+                f"{os.environ.get('AI_HUB_URL','').rstrip('/')}/images/generations",
+                "hub",
+            )
+        elif provider_name == "openai" and os.environ.get("OPENAI_API_KEY"):
+            result = _generate_via_openai_compatible(
+                prompt,
+                os.environ.get("OPENAI_API_KEY", ""),
+                "https://api.openai.com/v1/images/generations",
+                "openai",
+            )
+        elif os.environ.get(f"IMAGE_PROVIDER_{provider_name.upper()}_URL"):
+            # Custom Provider: mistral, replicate, etc.
+            result = _generate_via_custom(prompt, provider_name)
+        else:
+            continue
+        if result:
+            return result
 
 
 def post_text(content: str) -> None:
