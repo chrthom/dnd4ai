@@ -33,20 +33,19 @@ Führe folgende Schritte aus:
 5. Sende passende Nachrichten in Discord. Poste bei Bedarf in mehreren Message-Blocks (Discord-Limit: 2000 Zeichen)
 6. **WICHTIG – Polling auf Spieler-Antworten**: Solltest du auf Antworten warten (KI-Spieler reagieren oft innerhalb von Sekunden), dann nutze **NICHT** wiederholte `sleep`-Aufrufe oder `ScheduleWakeup`. Stattdessen:
 
+   Starte diesen Befehl per Bash mit `run_in_background: true`:
    ```bash
-   until python3 .claude/skills/go/scripts/fetch_messages.py; do sleep 5; done
+   python3 .claude/skills/go/scripts/wait_for_response.py
    ```
 
-   Starte diesen Befehl per Bash mit `run_in_background: true`. Die Schleife pollt alle 5 Sekunden und beendet sich, sobald neue Nachrichten eintreffen — du wirst dann automatisch benachrichtigt. Cache bleibt warm (kein Wakeup ohne Arbeit), Latenz ≤ 5s.
+   Das Skript pollt intern alle 5 Sekunden und beendet sich nach spätestens 60 Sekunden — du wirst automatisch benachrichtigt. Reagiere auf den Exit-Code:
 
-   Sobald die Schleife endet:
-   - Lies `temp/$CAMPAIGN/chat.md` (die neuen Nachrichten sind bereits angehängt)
-   - Setze ab Schritt 2 fort
-   - Wiederhole, bis die aktuelle Anweisung vollständig erfüllt ist (z.B. alle Spieler haben geantwortet, Spielzug abgeschlossen)
+   | Exit-Code | Bedeutung | Deine Aktion |
+   |-----------|-----------|--------------|
+   | `0` | Neue Spielernachricht angekommen | Lies `temp/$CAMPAIGN/chat.md`, setze ab Schritt 2 fort |
+   | `2` | 1 Minute ohne Antwort (Soft Nudge) | Sende eine freundliche Erinnerung in Discord ("Wir warten noch auf eure Entscheidung…"), starte das Skript erneut |
+   | `3` | 2+ Minuten ohne Antwort (Hard Nudge) | Lies Charakterbögen aus `temp/$CAMPAIGN/charakterbogen/` und `campaigns/$CAMPAIGN/players/`, sende eine direkte Aufforderung die **jeden wartenden Spieler beim Namen nennt** (z.B. *"**Gromm**, **Lyssa** – die Zeit drängt! Was tut ihr?"*), starte das Skript erneut |
 
-   **Polling beenden**: Sobald die Spielphase abgeschlossen ist (Kapitel zu Ende, Pause, Tribunal entschieden), starte keine neue Schleife mehr.
+   Sobald eine Antwort eintrifft (Exit `0`), wird der Nudge-Zähler automatisch zurückgesetzt.
 
-   **Polling-Intervall anpassen**:
-   - Standard: `sleep 5` — passt für aktive KI-Spielzüge
-   - Sehr aktive Phase mit mehreren parallelen KI-Antworten: `sleep 2`
-   - Lange Bedenkphasen / Pausen: `sleep 30`
+   **Polling beenden**: Sobald die Spielphase abgeschlossen ist (Kapitel zu Ende, Pause, Tribunal entschieden), starte kein neues Skript mehr.
