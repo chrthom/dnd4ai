@@ -87,8 +87,7 @@
         "Magischer Gegner": "Wirkt Zauber oder nutzt magische Fähigkeiten",
         "Flüchtender Gegner": "Versucht zu fliehen, wenn HP < 50%"
       },
-      "automatisch": true,
-      "beschreibung": "Die KI wählt die Action automatisch aus und führt sie durch (Würfeln, Trefferberechnung, Schadensberechnung)."
+      "automatisch": true
     },
     "phase_3_ende_pruefen": {
       "beschreibung": "Prüfen, ob Kampf beendet ist.",
